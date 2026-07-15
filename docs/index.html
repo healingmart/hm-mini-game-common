@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Healing Mart 공통 게임 메뉴 테스트</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;padding:40px 18px;
+  display:grid;place-items:center;color:#17233b;
+  background:linear-gradient(180deg,#edf7ff,#f8fbff 55%,#fff);
+  font-family:"Pretendard Variable",Pretendard,"Noto Sans KR",system-ui,sans-serif
+}
+.demo{
+  width:min(560px,100%);padding:30px;border:1px solid #dce6f1;
+  border-radius:24px;background:#fff;box-shadow:0 18px 50px rgba(31,72,118,.1);
+  text-align:center
+}
+.demo small{color:#3985e6;font-weight:800}
+.demo h1{margin:8px 0 9px;font-size:26px;letter-spacing:-.04em}
+.demo p{margin:0;color:#6d7890;line-height:1.75}
+.demo button{
+  min-height:52px;margin-top:23px;padding:0 22px;color:#fff;border:0;
+  border-radius:16px;background:linear-gradient(135deg,#3985e6,#67aff4);
+  box-shadow:0 10px 22px rgba(57,133,230,.24);font-size:15px;font-weight:850;cursor:pointer
+}
+</style>
+</head>
+<body>
+<main class="demo" data-current-game="ladder-race">
+  <small>Healing-mart.com</small>
+  <h1>카테고리 게임 메뉴</h1>
+  <p>현재 게임 제목이나 아래 버튼을 누르면 카테고리별 공통 게임 바텀시트가 열립니다.</p>
+  <button type="button" data-hm-game-menu-open>다른 게임 보기</button>
+</main>
+
+<script src="./js/hm-games-data.v1.js"></script>
+<script src="./js/hm-game-menu.v1.js"></script>
+</body>
+</html>
