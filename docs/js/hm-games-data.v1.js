@@ -1,6 +1,6 @@
 /*
  * Healing Mart Mini Game Registry v1.1.0
- * 새 게임 발행 후 window.HM_GAMES에 항목 하나만 추가하세요.
+ * 실제 Blogger 게시글 주소를 두 곳의 REPLACE 값에 입력한 뒤 업로드하세요.
  */
 (() => {
   "use strict";
@@ -8,31 +8,23 @@
   window.HM_GAME_CATEGORIES = Object.freeze([
     {
       id: "party-random",
-      title: "복불복·파티",
-      shortTitle: "복불복",
-      icon: "🎲",
-      description: "함께 즐기는 랜덤 선택 게임"
+      title: "랜덤·파티",
+      icon: "🎲"
     },
     {
       id: "word-quiz",
-      title: "퀴즈·단어",
-      shortTitle: "퀴즈",
-      icon: "🔤",
-      description: "상식과 단어를 맞히는 게임"
+      title: "단어·퀴즈",
+      icon: "🔤"
     },
     {
       id: "puzzle-strategy",
       title: "퍼즐·전략",
-      shortTitle: "퍼즐",
-      icon: "🧩",
-      description: "생각하며 해결하는 게임"
+      icon: "🧩"
     },
     {
       id: "reaction-timing",
-      title: "반응·액션",
-      shortTitle: "액션",
-      icon: "⚡",
-      description: "빠르게 반응하며 즐기는 게임"
+      title: "반응·타이밍",
+      icon: "⚡"
     }
   ]);
 
@@ -44,29 +36,24 @@
       icon: "🏁",
       category: "party-random",
       url: "https://www.healing-mart.com/REPLACE-WITH-LADDER-GAME-URL.html",
-      description: "캐릭터가 사다리를 달리고 마지막에 결과를 공개하는 복불복 게임",
+      description: "캐릭터가 사다리를 따라 달리고 부담 금액과 면제 결과를 공개하는 복불복 게임",
       status: "published",
       featured: true,
-      isNew: true,
+      isNew: false,
       order: 10
-    }
-
-    /*
-    새 게임 추가 예시
-
-    ,{
-      id: "choseong-game",
+    },
+    {
+      id: "choseong-toktok",
       title: "초성톡톡",
       shortTitle: "초성톡톡",
       icon: "🔤",
       category: "word-quiz",
-      url: "https://www.healing-mart.com/초성게임주소.html",
-      description: "초성을 보고 한국어 단어를 맞히는 게임",
+      url: "https://www.healing-mart.com/REPLACE-WITH-CHOSEONG-TOKTOK-URL.html",
+      description: "초성·속담·사자성어·글자 섞기를 제한시간 안에 맞히는 한국어 단어 게임",
       status: "published",
-      featured: false,
+      featured: true,
       isNew: true,
       order: 20
     }
-    */
   ]);
 })();
