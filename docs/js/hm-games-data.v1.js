@@ -1,6 +1,5 @@
 /*
  * Healing Mart Mini Game Registry v1.1.1
- * 새 게임 발행 후 window.HM_GAMES에 항목 하나만 추가하세요.
  */
 (() => {
   "use strict";
@@ -9,30 +8,22 @@
     {
       id: "party-random",
       title: "랜덤·파티",
-      shortTitle: "랜덤",
-      icon: "🎲",
-      description: "함께 즐기는 랜덤 선택 게임"
+      icon: "🎲"
     },
     {
       id: "word-quiz",
       title: "단어·퀴즈",
-      shortTitle: "퀴즈",
-      icon: "🔤",
-      description: "상식과 단어를 맞히는 게임"
+      icon: "🔤"
     },
     {
       id: "puzzle-strategy",
       title: "퍼즐·전략",
-      shortTitle: "퍼즐",
-      icon: "🧩",
-      description: "생각하며 해결하는 게임"
+      icon: "🧩"
     },
     {
       id: "reaction-timing",
       title: "반응·타이밍",
-      shortTitle: "반응",
-      icon: "⚡",
-      description: "빠르게 반응하며 즐기는 게임"
+      icon: "⚡"
     }
   ]);
 
