@@ -1,14 +1,17 @@
 /*
- * Healing Mart Common Game Menu v1.3.0
- * 카테고리 필터, 검색, 현재 게임 표시, 이용안내 및 고객지원
- * Q&A·오류신고 통합
+ * Healing Mart Common Game Menu v1.4.0
+ * 카테고리 필터, 검색, 현재 게임 표시
+ * 상단 오류신고 및 하드코딩 이용안내·저작권
  * 외부 라이브러리 없음
  */
 (() => {
   "use strict";
 
-  const STYLE_ID = "hmCommonGameMenuStyle";
-  const ROOT_ID = "hmCommonGameMenuRoot";
+  const STYLE_ID =
+    "hmCommonGameMenuStyle";
+
+  const ROOT_ID =
+    "hmCommonGameMenuRoot";
 
   const HOME_URL =
     "https://www.healing-mart.com/";
@@ -19,28 +22,20 @@
   const QNA_URL =
     "https://www.healing-mart.com/p/qna.html";
 
-  /*
-   * 이용안내·저작권·고객지원 고정 설정
-   * 외부 HM_GAME_SUPPORT 데이터에 의존하지 않습니다.
-   */
   const FIXED_SUPPORT = Object.freeze({
-    title: "이용안내 및 고객지원",
+    title: "이용안내 및 저작권",
 
-    description:
-      "게임 이용안내와 저작권을 확인하거나 오류 및 불편 사항을 알려주세요.",
-
-    guideTitle: "이용안내 및 저작권",
-
-    guideText:
+    text:
       "힐링편의점의 미니게임은 개인 이용자를 위한 오락 콘텐츠입니다. 게임 디자인, 설명문, 이미지 및 자체 제작 콘텐츠의 저작권은 힐링편의점에 있으며 무단 복제, 재배포 및 상업적 이용을 금합니다.",
 
-    qnaLabel: "Q&A·오류신고",
-
-    homeLabel: "힐링편의점 홈",
-    homeUrl: HOME_URL,
-
     copyright:
-      "© 2026 Healing Mart · 힐링편의점"
+      "© 2026 Healing Mart · 힐링편의점",
+
+    homeLabel:
+      "힐링편의점 홈",
+
+    homeUrl:
+      HOME_URL
   });
 
   const state = {
@@ -53,7 +48,7 @@
 
 
   /* ==================================================
-     공통 처리
+     공통
   ================================================== */
 
   const escapeHtml = (value) =>
@@ -71,17 +66,22 @@
 
 
   function getCurrentGameId() {
-    const explicit = document.querySelector(
-      "[data-current-game]"
-    );
+    const explicit =
+      document.querySelector(
+        "[data-current-game]"
+      );
 
-    if (explicit?.dataset.currentGame) {
-      return explicit.dataset.currentGame.trim();
+    if (
+      explicit?.dataset.currentGame
+    ) {
+      return explicit.dataset
+        .currentGame.trim();
     }
 
-    const app = document.querySelector(
-      "[data-game-id]"
-    );
+    const app =
+      document.querySelector(
+        "[data-game-id]"
+      );
 
     if (app?.dataset.gameId) {
       return app.dataset.gameId.trim();
@@ -92,9 +92,10 @@
 
 
   function getPublishedGames() {
-    const games = Array.isArray(window.HM_GAMES)
-      ? window.HM_GAMES
-      : [];
+    const games =
+      Array.isArray(window.HM_GAMES)
+        ? window.HM_GAMES
+        : [];
 
     return games
       .filter(
@@ -135,24 +136,30 @@
 
   function getCategoryMap() {
     return new Map(
-      getCategories().map((category) => [
-        category.id,
-        category
-      ])
+      getCategories().map(
+        (category) => [
+          category.id,
+          category
+        ]
+      )
     );
   }
 
 
-  function appendQuery(url, values) {
+  function appendQuery(
+    url,
+    values
+  ) {
     if (!url) {
       return "#";
     }
 
     try {
-      const parsed = new URL(
-        url,
-        window.location.href
-      );
+      const parsed =
+        new URL(
+          url,
+          window.location.href
+        );
 
       Object.entries(values).forEach(
         ([key, value]) => {
@@ -176,33 +183,75 @@
   }
 
 
-  /*
-   * 새 Q&A 페이지 주소 생성
-   *
-   * 전달값:
-   * type  = game
-   * game  = 내부 게임 ID
-   * title = 게임 이름
-   * page  = 현재 게임 주소
-   */
   function getQnaUrl() {
-    const currentGame = getCurrentGame();
+    const currentGame =
+      getCurrentGame();
 
-    return appendQuery(QNA_URL, {
-      type: "game",
+    return appendQuery(
+      QNA_URL,
+      {
+        type: "game",
 
-      game:
-        state.currentGameId || "",
+        game:
+          state.currentGameId || "",
 
-      title:
-        currentGame?.title ||
-        currentGame?.shortTitle ||
-        document.title ||
-        "",
+        title:
+          currentGame?.title ||
+          currentGame?.shortTitle ||
+          document.title ||
+          "",
 
-      page:
-        window.location.href
-    });
+        page:
+          window.location.href
+      }
+    );
+  }
+
+
+  /*
+   * 각 게임 상단 제목 아래의 작은 문구를
+   * 공통 문구로 변경합니다.
+   *
+   * 우선순위:
+   * 1. data-hm-game-menu-caption
+   * 2. 메뉴 버튼 안의 small 요소
+   */
+  function updateGameTitleCaptions() {
+    const triggers =
+      document.querySelectorAll(
+        "[data-hm-game-menu-open]"
+      );
+
+    triggers.forEach(
+      (trigger) => {
+        const caption =
+          trigger.querySelector(
+            "[data-hm-game-menu-caption]"
+          ) ||
+          trigger.querySelector("small");
+
+        if (!caption) {
+          return;
+        }
+
+        caption.textContent =
+          "게임 더보기 ＋ · 오류신고";
+      }
+    );
+  }
+
+
+  function updateExternalQnaLinks() {
+    const qnaUrl =
+      getQnaUrl();
+
+    document
+      .querySelectorAll(
+        "[data-hm-game-qna]"
+      )
+      .forEach((link) => {
+        link.href = qnaUrl;
+      });
   }
 
 
@@ -212,7 +261,9 @@
 
   function injectStyle() {
     if (
-      document.getElementById(STYLE_ID)
+      document.getElementById(
+        STYLE_ID
+      )
     ) {
       return;
     }
@@ -236,7 +287,11 @@
         --hm-menu-brand:#3985e6;
         --hm-menu-brand-dark:#2569bd;
         --hm-menu-brand-soft:#eaf4ff;
-        --hm-menu-mint:#eaf9f4;
+        --hm-menu-report:#df5267;
+        --hm-menu-report-dark:#b9364c;
+        --hm-menu-report-soft:#fff1f3;
+
+        color:var(--hm-menu-ink);
 
         font-family:
           "Pretendard Variable",
@@ -250,13 +305,15 @@
           "Segoe UI",
           sans-serif;
 
-        color:var(--hm-menu-ink);
         font-size:16px;
         line-height:1.5;
         word-break:keep-all;
 
-        -webkit-font-smoothing:antialiased;
-        text-rendering:optimizeLegibility;
+        -webkit-font-smoothing:
+          antialiased;
+
+        text-rendering:
+          optimizeLegibility;
       }
 
 
@@ -267,10 +324,14 @@
         inset:0;
         z-index:2147483300;
 
-        background:rgba(18,30,51,.48);
+        background:
+          rgba(18,30,51,.48);
 
-        -webkit-backdrop-filter:blur(2px);
-        backdrop-filter:blur(2px);
+        -webkit-backdrop-filter:
+          blur(2px);
+
+        backdrop-filter:
+          blur(2px);
 
         opacity:0;
         visibility:hidden;
@@ -288,7 +349,7 @@
       }
 
 
-      /* 메뉴 시트 */
+      /* 하단 메뉴 */
 
       .hm-menu-sheet {
         position:fixed;
@@ -298,26 +359,35 @@
         z-index:2147483310;
 
         width:100%;
+
         height:min(88vh,780px);
         height:min(88dvh,780px);
 
         display:grid;
-        grid-template-rows:auto minmax(0,1fr);
+        grid-template-rows:
+          auto minmax(0,1fr);
 
         padding:
           8px 14px
-          max(14px,env(safe-area-inset-bottom));
+          max(
+            14px,
+            env(safe-area-inset-bottom)
+          );
 
         overflow:hidden;
 
-        border:1px solid var(--hm-menu-line);
+        border:
+          1px solid
+          var(--hm-menu-line);
+
         border-bottom:0;
-        border-radius:26px 26px 0 0;
+        border-radius:
+          26px 26px 0 0;
 
         background:
           linear-gradient(
             180deg,
-            #fff 0,
+            #ffffff 0,
             #f8fbff 100%
           );
 
@@ -325,17 +395,26 @@
           0 -26px 76px
           rgba(18,38,70,.26);
 
-        transform:translateY(104%);
+        transform:
+          translateY(104%);
+
         visibility:hidden;
 
         transition:
           transform .3s
-            cubic-bezier(.22,.82,.31,1),
+            cubic-bezier(
+              .22,
+              .82,
+              .31,
+              1
+            ),
           visibility .3s;
       }
 
       .hm-menu-sheet.is-open {
-        transform:translateY(0);
+        transform:
+          translateY(0);
+
         visibility:visible;
       }
 
@@ -354,14 +433,16 @@
       }
 
 
-      /* 메뉴 머리글 */
+      /* 메뉴 제목 */
 
       .hm-menu-head {
         min-height:59px;
 
         display:flex;
         align-items:center;
-        justify-content:space-between;
+        justify-content:
+          space-between;
+
         gap:12px;
 
         padding:3px 2px 11px;
@@ -372,6 +453,7 @@
 
         display:flex;
         align-items:center;
+
         gap:10px;
       }
 
@@ -384,9 +466,9 @@
         display:grid;
         place-items:center;
 
-        border-radius:14px;
+        color:#ffffff;
 
-        color:#fff;
+        border-radius:14px;
 
         background:
           linear-gradient(
@@ -436,10 +518,16 @@
 
         margin-top:3px;
 
+        overflow:hidden;
+
         color:var(--hm-menu-muted);
 
         font-size:11px;
+        line-height:1.3;
         font-weight:650;
+
+        text-overflow:ellipsis;
+        white-space:nowrap;
       }
 
       .hm-menu-close {
@@ -453,11 +541,14 @@
 
         padding:0;
 
-        border:1px solid var(--hm-menu-line);
-        border-radius:13px;
-
-        background:#f7f9fc;
         color:#526078;
+
+        border:
+          1px solid
+          var(--hm-menu-line);
+
+        border-radius:13px;
+        background:#f7f9fc;
 
         cursor:pointer;
       }
@@ -479,11 +570,12 @@
       }
 
 
-      /* 검색과 카테고리 */
+      /* 검색 및 상단 카테고리 */
 
       .hm-menu-controls {
         padding:0 1px 11px;
-        border-bottom:1px solid #e9eef5;
+        border-bottom:
+          1px solid #e9eef5;
       }
 
       .hm-menu-search-wrap {
@@ -503,7 +595,8 @@
         width:18px;
         height:18px;
 
-        transform:translateY(-50%);
+        transform:
+          translateY(-50%);
 
         fill:none;
         stroke:#7890aa;
@@ -520,10 +613,12 @@
 
         color:var(--hm-menu-ink);
 
-        border:1px solid #d8e2ed;
+        border:
+          1px solid #d8e2ed;
+
         border-radius:14px;
 
-        background:#fff;
+        background:#ffffff;
         outline:none;
 
         font-size:15px;
@@ -546,13 +641,15 @@
         width:32px;
         height:32px;
 
-        transform:translateY(-50%);
+        transform:
+          translateY(-50%);
+
+        color:#76869b;
 
         border:0;
         border-radius:10px;
 
         background:transparent;
-        color:#76869b;
 
         cursor:pointer;
         font-size:18px;
@@ -568,6 +665,8 @@
 
       .hm-menu-tabs {
         display:flex;
+        align-items:center;
+
         gap:7px;
 
         padding:1px 1px 2px;
@@ -576,12 +675,17 @@
         overflow-y:hidden;
 
         scrollbar-width:none;
-        overscroll-behavior-x:contain;
+
+        overscroll-behavior-x:
+          contain;
       }
 
       .hm-menu-tabs::-webkit-scrollbar {
         display:none;
       }
+
+
+      /* 카테고리 버튼 */
 
       .hm-menu-tab {
         flex:0 0 auto;
@@ -593,14 +697,16 @@
         display:inline-flex;
         align-items:center;
         justify-content:center;
+
         gap:6px;
 
         color:#58677d;
 
-        border:1px solid #dce4ee;
-        border-radius:999px;
+        border:
+          1px solid #dce4ee;
 
-        background:#fff;
+        border-radius:999px;
+        background:#ffffff;
 
         cursor:pointer;
 
@@ -614,7 +720,7 @@
         border-color:#a9c9ea;
       }
 
-      .hm-menu-tab .hm-menu-tab-count {
+      .hm-menu-tab-count {
         min-width:20px;
         height:20px;
 
@@ -623,17 +729,19 @@
         display:inline-grid;
         place-items:center;
 
-        border-radius:999px;
-
         color:#718096;
+
+        border-radius:999px;
         background:#edf2f7;
 
         font-size:10px;
       }
 
       .hm-menu-tab.is-active {
-        color:#fff;
-        border-color:var(--hm-menu-brand);
+        color:#ffffff;
+
+        border-color:
+          var(--hm-menu-brand);
 
         background:
           linear-gradient(
@@ -650,7 +758,66 @@
       .hm-menu-tab.is-active
       .hm-menu-tab-count {
         color:#296fbf;
-        background:#fff;
+        background:#ffffff;
+      }
+
+
+      /* 상단 오류신고 */
+
+      .hm-menu-report-tab {
+        flex:0 0 auto;
+
+        min-height:39px;
+
+        padding:0 13px;
+
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+
+        gap:6px;
+
+        color:var(
+          --hm-menu-report-dark
+        );
+
+        text-decoration:none;
+
+        border:
+          1px solid #f0b9c2;
+
+        border-radius:999px;
+
+        background:
+          var(--hm-menu-report-soft);
+
+        font-size:12px;
+        font-weight:850;
+        white-space:nowrap;
+
+        transition:
+          color .16s ease,
+          border-color .16s ease,
+          background-color .16s ease,
+          transform .16s ease;
+      }
+
+      .hm-menu-report-tab:hover {
+        color:#ffffff;
+
+        border-color:
+          var(--hm-menu-report);
+
+        background:
+          var(--hm-menu-report);
+
+        transform:
+          translateY(-1px);
+      }
+
+      .hm-menu-report-tab-icon {
+        font-size:13px;
+        line-height:1;
       }
 
 
@@ -665,8 +832,11 @@
         overflow-y:auto;
         overflow-x:hidden;
 
-        overscroll-behavior:contain;
-        -webkit-overflow-scrolling:touch;
+        overscroll-behavior:
+          contain;
+
+        -webkit-overflow-scrolling:
+          touch;
       }
 
       .hm-menu-summary {
@@ -674,7 +844,9 @@
 
         display:flex;
         align-items:center;
-        justify-content:space-between;
+        justify-content:
+          space-between;
+
         gap:10px;
 
         margin-bottom:9px;
@@ -686,7 +858,8 @@
       }
 
       .hm-menu-summary strong {
-        color:var(--hm-menu-brand-dark);
+        color:
+          var(--hm-menu-brand-dark);
 
         font-size:12px;
       }
@@ -696,8 +869,12 @@
 
       .hm-menu-grid {
         display:grid;
+
         grid-template-columns:
-          repeat(2,minmax(0,1fr));
+          repeat(
+            2,
+            minmax(0,1fr)
+          );
 
         gap:9px;
       }
@@ -713,15 +890,20 @@
         display:flex;
         flex-direction:column;
         align-items:flex-start;
+
         gap:9px;
 
         color:var(--hm-menu-ink);
         text-decoration:none;
 
-        border:1px solid var(--hm-menu-line);
+        border:
+          1px solid
+          var(--hm-menu-line);
+
         border-radius:17px;
 
-        background:var(--hm-menu-card);
+        background:
+          var(--hm-menu-card);
 
         box-shadow:
           0 7px 19px
@@ -734,7 +916,8 @@
       }
 
       .hm-menu-card:hover {
-        transform:translateY(-1px);
+        transform:
+          translateY(-1px);
 
         border-color:#aacdf3;
 
@@ -761,7 +944,9 @@
 
         display:flex;
         align-items:center;
-        justify-content:space-between;
+        justify-content:
+          space-between;
+
         gap:8px;
       }
 
@@ -791,10 +976,11 @@
 
         padding:4px 7px;
 
-        border-radius:999px;
+        color:#ffffff;
 
-        color:#fff;
-        background:var(--hm-menu-brand);
+        border-radius:999px;
+        background:
+          var(--hm-menu-brand);
 
         font-size:9px;
         font-weight:850;
@@ -852,7 +1038,7 @@
       }
 
 
-      /* 검색 결과 없음 */
+      /* 결과 없음 */
 
       .hm-menu-empty {
         min-height:210px;
@@ -895,13 +1081,15 @@
       }
 
 
-      /* 이용안내 및 고객지원 */
+      /* 하드코딩 이용안내·저작권 */
 
       .hm-menu-support {
         margin-top:18px;
-        padding:16px;
+        padding:15px 16px;
 
-        border:1px solid #dfe9f4;
+        border:
+          1px solid #dfe9f4;
+
         border-radius:18px;
 
         background:
@@ -915,6 +1103,7 @@
       .hm-menu-support-head {
         display:flex;
         align-items:flex-start;
+
         gap:10px;
       }
 
@@ -929,13 +1118,13 @@
 
         border-radius:12px;
 
-        background:#fff;
+        background:#ffffff;
 
         box-shadow:
           0 5px 14px
           rgba(42,85,130,.08);
 
-        font-size:19px;
+        font-size:18px;
       }
 
       .hm-menu-support-copy {
@@ -947,7 +1136,7 @@
 
         color:#243b58;
 
-        font-size:14px;
+        font-size:13px;
         font-weight:850;
       }
 
@@ -956,131 +1145,13 @@
 
         color:#6b7d92;
 
-        font-size:11px;
-        line-height:1.55;
-        font-weight:600;
-      }
-
-
-      /* 하드코딩 이용안내·저작권 */
-
-      .hm-menu-guide {
-        margin-top:13px;
-        padding:13px 14px;
-
-        border:1px solid #e0e7ef;
-        border-radius:13px;
-
-        background:rgba(255,255,255,.84);
-      }
-
-      .hm-menu-guide strong {
-        display:flex;
-        align-items:center;
-        gap:6px;
-
-        color:#354b65;
-
-        font-size:12px;
-        line-height:1.4;
-        font-weight:850;
-      }
-
-      .hm-menu-guide p {
-        margin:6px 0 0;
-
-        color:#6b7889;
-
         font-size:10px;
         line-height:1.65;
         font-weight:600;
       }
 
-
-      /* Q&A·오류신고 */
-
-      .hm-menu-support-links {
-        display:grid;
-        grid-template-columns:minmax(0,1fr);
-
-        gap:7px;
-
-        margin-top:12px;
-      }
-
-      .hm-menu-support-link {
-        min-width:0;
-        min-height:48px;
-
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        gap:7px;
-
-        padding:9px 12px;
-
-        color:#37536f;
-        text-decoration:none;
-        text-align:center;
-
-        border:1px solid #d8e5f1;
-        border-radius:12px;
-
-        background:#fff;
-
-        font-size:12px;
-        line-height:1.3;
-        font-weight:850;
-
-        transition:
-          color .16s ease,
-          border-color .16s ease,
-          background-color .16s ease,
-          transform .16s ease;
-      }
-
-      .hm-menu-support-link:hover {
-        color:#236ab8;
-        border-color:#9bc5ef;
-        background:#f9fcff;
-        transform:translateY(-1px);
-      }
-
-      .hm-menu-support-link.is-qna {
-        color:#176c57;
-        border-color:#bfe4d8;
-
-        background:
-          linear-gradient(
-            145deg,
-            #f7fffc,
-            #effbf7
-          );
-      }
-
-      .hm-menu-support-link.is-qna:hover {
-        color:#0d5b47;
-        border-color:#8ed1bd;
-        background:#f2fffa;
-      }
-
-      .hm-menu-support-link-icon {
-        font-size:16px;
-        line-height:1;
-      }
-
-      .hm-menu-support-link-arrow {
-        margin-left:2px;
-
-        font-size:14px;
-        line-height:1;
-      }
-
-
-      /* 저작권 표시 */
-
       .hm-menu-copyright {
-        margin:12px 0 0;
+        margin:11px 0 0;
 
         color:#8997a8;
 
@@ -1097,6 +1168,7 @@
       .hm-menu-links {
         display:grid;
         grid-template-columns:1fr 1fr;
+
         gap:8px;
 
         margin-top:12px;
@@ -1108,15 +1180,19 @@
         display:flex;
         align-items:center;
         justify-content:center;
+
         gap:7px;
 
         color:#43546b;
         text-decoration:none;
 
-        border:1px solid var(--hm-menu-line);
+        border:
+          1px solid
+          var(--hm-menu-line);
+
         border-radius:14px;
 
-        background:#fff;
+        background:#ffffff;
 
         font-size:12px;
         font-weight:800;
@@ -1140,7 +1216,24 @@
       }
 
 
-      /* 메뉴가 열린 동안 본문 스크롤 차단 */
+      /* 접근성 포커스 */
+
+      .hm-menu-close:focus-visible,
+      .hm-menu-search:focus-visible,
+      .hm-menu-search-clear:focus-visible,
+      .hm-menu-tab:focus-visible,
+      .hm-menu-report-tab:focus-visible,
+      .hm-menu-card:focus-visible,
+      .hm-menu-link:focus-visible {
+        outline:
+          3px solid
+          rgba(57,133,230,.28);
+
+        outline-offset:2px;
+      }
+
+
+      /* 본문 스크롤 차단 */
 
       body.hm-game-menu-open {
         overflow:hidden !important;
@@ -1167,7 +1260,10 @@
 
         .hm-menu-grid {
           grid-template-columns:
-            repeat(3,minmax(0,1fr));
+            repeat(
+              3,
+              minmax(0,1fr)
+            );
         }
       }
 
@@ -1184,6 +1280,10 @@
           font-size:17px;
         }
 
+        .hm-menu-brand small {
+          font-size:10px;
+        }
+
         .hm-menu-grid {
           gap:7px;
         }
@@ -1198,19 +1298,11 @@
         }
 
         .hm-menu-support {
-          padding:14px 12px;
+          padding:13px 12px;
         }
 
-        .hm-menu-guide {
-          padding:12px;
-        }
-
-        .hm-menu-guide p {
-          font-size:10px;
-        }
-
-        .hm-menu-support-link {
-          min-height:46px;
+        .hm-menu-support-copy p {
+          font-size:9.5px;
         }
       }
 
@@ -1228,24 +1320,28 @@
       }
 
 
-      /* 모션 감소 설정 */
+      /* 모션 감소 */
 
-      @media (prefers-reduced-motion:reduce) {
+      @media (
+        prefers-reduced-motion:reduce
+      ) {
         .hm-menu-backdrop,
         .hm-menu-sheet,
         .hm-menu-card,
-        .hm-menu-support-link {
+        .hm-menu-report-tab {
           transition:none !important;
         }
       }
     `;
 
-    document.head.appendChild(style);
+    document.head.appendChild(
+      style
+    );
   }
 
 
   /* ==================================================
-     게임 카드
+     게임 카드 생성
   ================================================== */
 
   function createCard(
@@ -1259,9 +1355,18 @@
       categoryMap.get(game.category);
 
     const badge = isCurrent
-      ? '<span class="hm-menu-badge">현재 게임</span>'
+      ? `
+        <span class="hm-menu-badge">
+          현재 게임
+        </span>
+      `
       : game.isNew
-        ? '<span class="hm-menu-badge is-new">NEW</span>'
+        ? `
+          <span
+            class="hm-menu-badge is-new">
+            NEW
+          </span>
+        `
         : "";
 
     return `
@@ -1271,7 +1376,9 @@
             ? " is-current"
             : ""
         }"
-        href="${escapeHtml(game.url)}"
+        href="${escapeHtml(
+          game.url
+        )}"
         ${
           isCurrent
             ? 'aria-current="page" tabindex="-1"'
@@ -1282,6 +1389,7 @@
           <span
             class="hm-menu-icon"
             aria-hidden="true">
+
             ${escapeHtml(
               game.icon || "🎮"
             )}
@@ -1305,7 +1413,9 @@
           </small>
         </span>
 
-        <span class="hm-menu-category-label">
+        <span
+          class="hm-menu-category-label">
+
           ${escapeHtml(
             category?.title ||
             "미니게임"
@@ -1317,26 +1427,24 @@
 
 
   /* ==================================================
-     이용안내 및 고객지원
+     하드코딩 이용안내·저작권
   ================================================== */
 
   function createSupportMarkup() {
-    const qnaUrl = getQnaUrl();
-
     return `
       <section
         class="hm-menu-support"
-        aria-labelledby="hmGameSupportTitle">
+        aria-labelledby="hmGameGuideTitle">
 
         <div class="hm-menu-support-head">
           <span
             class="hm-menu-support-icon"
             aria-hidden="true">
-            💬
+            📘
           </span>
 
           <div class="hm-menu-support-copy">
-            <strong id="hmGameSupportTitle">
+            <strong id="hmGameGuideTitle">
               ${escapeHtml(
                 FIXED_SUPPORT.title
               )}
@@ -1344,55 +1452,10 @@
 
             <p>
               ${escapeHtml(
-                FIXED_SUPPORT.description
+                FIXED_SUPPORT.text
               )}
             </p>
           </div>
-        </div>
-
-        <div class="hm-menu-guide">
-          <strong>
-            <span aria-hidden="true">
-              📘
-            </span>
-
-            <span>
-              ${escapeHtml(
-                FIXED_SUPPORT.guideTitle
-              )}
-            </span>
-          </strong>
-
-          <p>
-            ${escapeHtml(
-              FIXED_SUPPORT.guideText
-            )}
-          </p>
-        </div>
-
-        <div class="hm-menu-support-links">
-          <a
-            class="hm-menu-support-link is-qna"
-            href="${escapeHtml(qnaUrl)}">
-
-            <span
-              class="hm-menu-support-link-icon"
-              aria-hidden="true">
-              🛠️
-            </span>
-
-            <span>
-              ${escapeHtml(
-                FIXED_SUPPORT.qnaLabel
-              )}
-            </span>
-
-            <span
-              class="hm-menu-support-link-arrow"
-              aria-hidden="true">
-              →
-            </span>
-          </a>
         </div>
 
         <p class="hm-menu-copyright">
@@ -1406,20 +1469,23 @@
 
 
   /* ==================================================
-     게임 필터
+     검색·필터
   ================================================== */
 
   function getFilteredGames() {
     const query =
       state.query
         .trim()
-        .toLocaleLowerCase("ko-KR");
+        .toLocaleLowerCase(
+          "ko-KR"
+        );
 
     return getPublishedGames().filter(
       (game) => {
         if (
           state.category !== "all" &&
-          game.category !== state.category
+          game.category !==
+            state.category
         ) {
           return false;
         }
@@ -1435,7 +1501,9 @@
         ]
           .filter(Boolean)
           .join(" ")
-          .toLocaleLowerCase("ko-KR");
+          .toLocaleLowerCase(
+            "ko-KR"
+          );
 
         return text.includes(query);
       }
@@ -1444,12 +1512,14 @@
 
 
   /* ==================================================
-     카테고리 렌더링
+     상단 카테고리·오류신고
   ================================================== */
 
   function renderTabs() {
     const root =
-      document.getElementById(ROOT_ID);
+      document.getElementById(
+        ROOT_ID
+      );
 
     const tabs =
       root?.querySelector(
@@ -1473,15 +1543,8 @@
           )
       );
 
-    const items = [
-      {
-        id: "all",
-        title: "전체",
-        icon: "",
-        count: games.length
-      },
-
-      ...categories.map(
+    const categoryItems =
+      categories.map(
         (category) => ({
           id: category.id,
           title: category.title,
@@ -1493,72 +1556,130 @@
               category.id
           ).length
         })
-      )
-    ];
+      );
 
-    if (
-      !items.some(
+    const validCategory =
+      state.category === "all" ||
+      categoryItems.some(
         (item) =>
           item.id === state.category
-      )
-    ) {
+      );
+
+    if (!validCategory) {
       state.category = "all";
     }
 
-    tabs.innerHTML = items
-      .map(
-        (item) => `
-          <button
-            class="hm-menu-tab${
-              item.id === state.category
-                ? " is-active"
-                : ""
-            }"
-            type="button"
-            data-hm-menu-category="${escapeHtml(
-              item.id
-            )}"
-            aria-pressed="${
-              item.id === state.category
-                ? "true"
-                : "false"
-            }">
+    const allButton = `
+      <button
+        class="hm-menu-tab${
+          state.category === "all"
+            ? " is-active"
+            : ""
+        }"
+        type="button"
+        data-hm-menu-category="all"
+        aria-pressed="${
+          state.category === "all"
+            ? "true"
+            : "false"
+        }">
 
-            ${
-              item.icon
-                ? `
-                  <span aria-hidden="true">
-                    ${escapeHtml(
-                      item.icon
-                    )}
-                  </span>
-                `
-                : ""
-            }
+        <span>전체</span>
 
-            <span>
-              ${escapeHtml(
-                item.title
-              )}
-            </span>
+        <span class="hm-menu-tab-count">
+          ${games.length}
+        </span>
+      </button>
+    `;
 
-            <span class="hm-menu-tab-count">
-              ${item.count}
-            </span>
-          </button>
-        `
-      )
-      .join("");
+    /*
+     * 오류신고는 전체 바로 다음에 배치하여
+     * 카테고리가 많아져도 쉽게 보이게 합니다.
+     */
+    const reportButton = `
+      <a
+        class="hm-menu-report-tab"
+        href="${escapeHtml(
+          getQnaUrl()
+        )}"
+        aria-label="현재 게임 문의 및 오류신고">
+
+        <span
+          class="hm-menu-report-tab-icon"
+          aria-hidden="true">
+          🛠️
+        </span>
+
+        <span>오류신고</span>
+      </a>
+    `;
+
+    const categoryButtons =
+      categoryItems
+        .map(
+          (item) => `
+            <button
+              class="hm-menu-tab${
+                item.id ===
+                state.category
+                  ? " is-active"
+                  : ""
+              }"
+              type="button"
+              data-hm-menu-category="${escapeHtml(
+                item.id
+              )}"
+              aria-pressed="${
+                item.id ===
+                state.category
+                  ? "true"
+                  : "false"
+              }">
+
+              ${
+                item.icon
+                  ? `
+                    <span
+                      aria-hidden="true">
+                      ${escapeHtml(
+                        item.icon
+                      )}
+                    </span>
+                  `
+                  : ""
+              }
+
+              <span>
+                ${escapeHtml(
+                  item.title
+                )}
+              </span>
+
+              <span
+                class="hm-menu-tab-count">
+                ${item.count}
+              </span>
+            </button>
+          `
+        )
+        .join("");
+
+    tabs.innerHTML =
+      allButton +
+      reportButton +
+      categoryButtons;
   }
 
 
   /* ==================================================
-     게임 목록 렌더링
+     게임 목록
   ================================================== */
 
   function renderGames() {
     const root =
-      document.getElementById(ROOT_ID);
+      document.getElementById(
+        ROOT_ID
+      );
 
     if (!root) {
       return;
@@ -1619,15 +1740,16 @@
       </span>
     `;
 
-    grid.innerHTML = games
-      .map(
-        (game) =>
-          createCard(
-            game,
-            categoryMap
-          )
-      )
-      .join("");
+    grid.innerHTML =
+      games
+        .map(
+          (game) =>
+            createCard(
+              game,
+              categoryMap
+            )
+        )
+        .join("");
 
     grid.hidden =
       games.length === 0;
@@ -1642,13 +1764,11 @@
   }
 
 
-  /* ==================================================
-     고객지원 렌더링
-  ================================================== */
-
   function renderSupport() {
     const root =
-      document.getElementById(ROOT_ID);
+      document.getElementById(
+        ROOT_ID
+      );
 
     const holder =
       root?.querySelector(
@@ -1666,7 +1786,9 @@
 
   function renderControls() {
     const root =
-      document.getElementById(ROOT_ID);
+      document.getElementById(
+        ROOT_ID
+      );
 
     const searchWrap =
       root?.querySelector(
@@ -1697,16 +1819,21 @@
     renderTabs();
     renderGames();
     renderSupport();
+
+    updateExternalQnaLinks();
+    updateGameTitleCaptions();
   }
 
 
   /* ==================================================
-     메뉴 마운트
+     메뉴 HTML
   ================================================== */
 
   function mount() {
     const root =
-      document.getElementById(ROOT_ID);
+      document.getElementById(
+        ROOT_ID
+      );
 
     if (!root) {
       return;
@@ -1734,7 +1861,8 @@
 
           <header class="hm-menu-head">
 
-            <div class="hm-menu-title-wrap">
+            <div
+              class="hm-menu-title-wrap">
 
               <span
                 class="hm-menu-title-icon"
@@ -1754,12 +1882,13 @@
               </span>
 
               <div class="hm-menu-brand">
-                <h2 id="hmCommonGameMenuTitle">
-                  다른 게임 보기
+                <h2
+                  id="hmCommonGameMenuTitle">
+                  힐링편의점 미니게임
                 </h2>
 
                 <small>
-                  카테고리를 선택해 즐겨보세요.
+                  게임을 선택하거나 오류를 알려주세요.
                 </small>
               </div>
             </div>
@@ -1773,6 +1902,7 @@
               <svg
                 viewBox="0 0 24 24"
                 aria-hidden="true">
+
                 <path
                   d="M6 6l12 12M18 6 6 18">
                 </path>
@@ -1820,11 +1950,10 @@
               </button>
             </div>
 
-            <div
+            <nav
               class="hm-menu-tabs"
-              role="tablist"
-              aria-label="게임 카테고리">
-            </div>
+              aria-label="게임 카테고리와 오류신고">
+            </nav>
           </div>
         </div>
 
@@ -1869,7 +1998,8 @@
             </div>
           </div>
 
-          <div class="hm-menu-support-holder">
+          <div
+            class="hm-menu-support-holder">
           </div>
 
           <div class="hm-menu-links">
@@ -1959,12 +2089,14 @@
 
 
   /* ==================================================
-     요소 가져오기
+     요소
   ================================================== */
 
   function getParts() {
     const root =
-      document.getElementById(ROOT_ID);
+      document.getElementById(
+        ROOT_ID
+      );
 
     return {
       root,
@@ -1993,7 +2125,7 @@
 
 
   /* ==================================================
-     메뉴 열기·닫기
+     열기·닫기
   ================================================== */
 
   function openMenu(trigger) {
@@ -2014,10 +2146,6 @@
     state.currentGameId =
       getCurrentGameId();
 
-    /*
-     * 메뉴를 열 때 데이터와 Q&A 주소를
-     * 최신 상태로 다시 생성합니다.
-     */
     renderControls();
 
     state.returnFocus =
@@ -2059,7 +2187,9 @@
   }
 
 
-  function closeMenu(options = {}) {
+  function closeMenu(
+    options = {}
+  ) {
     const {
       backdrop,
       sheet
@@ -2105,7 +2235,8 @@
     ) {
       window.setTimeout(
         () => {
-          state.returnFocus?.focus?.();
+          state.returnFocus
+            ?.focus?.();
         },
         80
       );
@@ -2114,7 +2245,7 @@
 
 
   /* ==================================================
-     카테고리 변경
+     카테고리
   ================================================== */
 
   function setCategory(category) {
@@ -2195,7 +2326,6 @@
 
         if (closeButton) {
           event.preventDefault();
-
           closeMenu();
         }
       }
@@ -2229,7 +2359,6 @@
           state.open
         ) {
           event.preventDefault();
-
           closeMenu();
         }
       }
@@ -2243,7 +2372,9 @@
 
   function init() {
     if (
-      document.getElementById(ROOT_ID)
+      document.getElementById(
+        ROOT_ID
+      )
     ) {
       return;
     }
@@ -2253,6 +2384,9 @@
 
     injectStyle();
 
+    updateGameTitleCaptions();
+    updateExternalQnaLinks();
+
     const root =
       document.createElement("div");
 
@@ -2260,10 +2394,12 @@
 
     root.setAttribute(
       "data-hm-common-menu",
-      "v1.3"
+      "v1.4"
     );
 
-    document.body.appendChild(root);
+    document.body.appendChild(
+      root
+    );
 
     mount();
     bind();
@@ -2276,34 +2412,39 @@
 
   window.HMGameMenu =
     Object.freeze({
-      open: openMenu,
+      open:
+        openMenu,
 
-      close: closeMenu,
+      close:
+        closeMenu,
 
-      isOpen: () =>
-        state.open,
+      isOpen:
+        () => state.open,
 
       setCategory,
+
+      getQnaUrl,
 
       refresh() {
         state.currentGameId =
           getCurrentGameId();
 
+        updateGameTitleCaptions();
+        updateExternalQnaLinks();
         renderControls();
-      },
-
-      getQnaUrl
+      }
     });
 
 
   if (
-    document.readyState === "loading"
+    document.readyState ===
+    "loading"
   ) {
     document.addEventListener(
       "DOMContentLoaded",
       init,
       {
-        once: true
+        once:true
       }
     );
   } else {
