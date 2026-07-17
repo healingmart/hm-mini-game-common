@@ -152,7 +152,7 @@
       category: "puzzle-strategy",
 
       url:
-        "https://www.healing-mart.com/2026/07/Reversi.html",
+        "https://www.healing-mart.com/2026/07/reversi.html",
 
       description:
         "4 x 4, 6 x 6, 8 x 8, 10 x 10 코스와 네 단계 AI를 지원하는 돌 뒤집기 전략 보드게임",
