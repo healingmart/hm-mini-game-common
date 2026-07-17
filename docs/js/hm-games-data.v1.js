@@ -41,12 +41,6 @@
     })
   ]);
 
-  /*
-   * 모든 게임의 제목 바텀시트에서 공통으로 사용하는 링크입니다.
-   *
-   * 아래 페이지를 만든 뒤 실제 주소가 다르면
-   * URL 세 개만 수정하세요.
-   */
   window.HM_GAME_SUPPORT = Object.freeze({
     title: "이용안내 및 고객지원",
 
@@ -148,6 +142,25 @@
       featured: true,
       isNew: true,
       order: 40
+    }),
+
+    Object.freeze({
+      id: "reversi",
+      title: "한판 리버시",
+      shortTitle: "리버시",
+      icon: "◐",
+      category: "puzzle-strategy",
+
+      url:
+        "https://www.healing-mart.com/2026/07/Reversi.html",
+
+      description:
+        "4 x 4, 6 x 6, 8 x 8, 10 x 10 코스와 네 단계 AI를 지원하는 돌 뒤집기 전략 보드게임",
+
+      status: "published",
+      featured: true,
+      isNew: true,
+      order: 50
     })
   ]);
 })();
