@@ -161,6 +161,25 @@
       featured: true,
       isNew: true,
       order: 50
+    }),
+
+    Object.freeze({
+      id: "reaction-test",
+      title: "반응속도 테스트",
+      shortTitle: "반응속도",
+      icon: "⚡",
+      category: "reaction-timing",
+
+      url:
+        "https://www.healing-mart.com/2026/07/Reaction-Time-Test.html",
+
+      description:
+        "초록불 반응, 방향 선택, 타깃 터치, 막대 정지, 회전 정지 등 다양한 미션과 100단계 챌린지를 즐기는 종합 반응속도 게임",
+
+      status: "published",
+      featured: true,
+      isNew: true,
+      order: 60
     })
   ]);
 })();
