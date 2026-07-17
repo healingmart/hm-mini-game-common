@@ -1,5 +1,5 @@
 /*
- * Healing Mart Common Game Menu v1.4.1
+ * Healing Mart Common Game Menu v1.4.2
  * 카테고리 필터, 검색, 현재 게임 표시
  * 상단 오류신고 및 하드코딩 이용안내·저작권
  * 외부 라이브러리 없음
@@ -678,45 +678,10 @@
 
         overscroll-behavior-x:
           contain;
-
-        -webkit-overflow-scrolling:
-          touch;
-
-        touch-action:
-          pan-x;
       }
 
       .hm-menu-tabs::-webkit-scrollbar {
         display:none;
-      }
-
-      /*
-       * PC에서는 카테고리 줄을 마우스로
-       * 잡아 끌거나 휠로 좌우 이동합니다.
-       * 모바일의 손가락 스와이프는 그대로 유지합니다.
-       */
-      @media (
-        min-width:720px
-      ) and (
-        pointer:fine
-      ) {
-        .hm-menu-tabs {
-          cursor:grab;
-          user-select:none;
-          -webkit-user-select:none;
-        }
-
-        .hm-menu-tabs.is-dragging {
-          cursor:grabbing;
-          scroll-behavior:auto;
-        }
-
-        .hm-menu-tabs.is-dragging
-        .hm-menu-tab,
-        .hm-menu-tabs.is-dragging
-        .hm-menu-report-tab {
-          pointer-events:none;
-        }
       }
 
 
@@ -1299,6 +1264,25 @@
               3,
               minmax(0,1fr)
             );
+        }
+
+        /*
+         * PC에서도 카테고리 줄이 실제로 넘치도록
+         * 버튼 폭을 확보하고 마우스 드래그를 표시합니다.
+         */
+        .hm-menu-tabs {
+          cursor:grab;
+          user-select:none;
+          -webkit-user-select:none;
+        }
+
+        .hm-menu-tabs.is-dragging {
+          cursor:grabbing;
+        }
+
+        .hm-menu-tab,
+        .hm-menu-report-tab {
+          min-width:112px;
         }
       }
 
@@ -2296,84 +2280,27 @@
      PC 카테고리 좌우 이동
   ================================================== */
 
-  function enableDesktopTabScroll() {
-    const root =
-      document.getElementById(
-        ROOT_ID
-      );
-
+  function bindPcTabScroll() {
     const tabs =
-      root?.querySelector(
-        ".hm-menu-tabs"
+      document.querySelector(
+        `#${ROOT_ID} .hm-menu-tabs`
       );
 
-    if (
-      !tabs ||
-      tabs.dataset
-        .hmDesktopScrollBound ===
-        "true"
-    ) {
+    if (!tabs) {
       return;
     }
-
-    tabs.dataset.hmDesktopScrollBound =
-      "true";
 
     let dragging = false;
     let moved = false;
     let startX = 0;
-    let startScrollLeft = 0;
-    let activePointerId = null;
-
-    const canScroll = () =>
-      tabs.scrollWidth >
-      tabs.clientWidth + 1;
-
-    const finishDrag = (event) => {
-      if (!dragging) {
-        return;
-      }
-
-      dragging = false;
-      tabs.classList.remove(
-        "is-dragging"
-      );
-
-      if (moved) {
-        tabs.dataset
-          .hmSuppressClickUntil =
-          String(Date.now() + 220);
-      }
-
-      if (
-        activePointerId !== null &&
-        tabs.hasPointerCapture?.(
-          activePointerId
-        )
-      ) {
-        try {
-          tabs.releasePointerCapture(
-            activePointerId
-          );
-        } catch (error) {
-          /* 포인터 해제 실패는 무시합니다. */
-        }
-      }
-
-      activePointerId = null;
-
-      if (event) {
-        event.preventDefault?.();
-      }
-    };
+    let startLeft = 0;
 
     tabs.addEventListener(
       "pointerdown",
       (event) => {
         if (
           event.pointerType !== "mouse" ||
-          event.button !== 0 ||
-          !canScroll()
+          event.button !== 0
         ) {
           return;
         }
@@ -2381,124 +2308,67 @@
         dragging = true;
         moved = false;
         startX = event.clientX;
-        startScrollLeft =
-          tabs.scrollLeft;
-        activePointerId =
-          event.pointerId;
+        startLeft = tabs.scrollLeft;
 
         tabs.classList.add(
           "is-dragging"
         );
 
-        try {
-          tabs.setPointerCapture(
-            event.pointerId
-          );
-        } catch (error) {
-          /* 포인터 캡처 미지원 환경은 그대로 진행합니다. */
-        }
+        tabs.setPointerCapture?.(
+          event.pointerId
+        );
       }
     );
 
     tabs.addEventListener(
       "pointermove",
       (event) => {
-        if (
-          !dragging ||
-          event.pointerId !==
-            activePointerId
-        ) {
+        if (!dragging) {
           return;
         }
 
         const distance =
           event.clientX - startX;
 
-        if (Math.abs(distance) > 4) {
-          moved = true;
-        }
+        moved =
+          moved ||
+          Math.abs(distance) > 4;
 
         tabs.scrollLeft =
-          startScrollLeft - distance;
-
-        event.preventDefault();
+          startLeft - distance;
       }
     );
 
+    const stopDrag = () => {
+      dragging = false;
+      tabs.classList.remove(
+        "is-dragging"
+      );
+    };
+
     tabs.addEventListener(
       "pointerup",
-      finishDrag
+      stopDrag
     );
 
     tabs.addEventListener(
       "pointercancel",
-      finishDrag
+      stopDrag
     );
 
-    tabs.addEventListener(
-      "lostpointercapture",
-      () => {
-        if (dragging) {
-          finishDrag();
-        }
-      }
-    );
-
-    /*
-     * PC 일반 마우스의 세로 휠도
-     * 카테고리 줄 위에서는 좌우 이동으로 사용합니다.
-     */
     tabs.addEventListener(
       "wheel",
       (event) => {
         if (
-          !canScroll() ||
-          !window.matchMedia(
-            "(pointer:fine)"
-          ).matches
+          tabs.scrollWidth <=
+          tabs.clientWidth
         ) {
           return;
         }
 
-        const delta =
-          Math.abs(event.deltaX) >
-          Math.abs(event.deltaY)
-            ? event.deltaX
-            : event.deltaY;
-
-        if (!delta) {
-          return;
-        }
-
-        const maxScroll =
-          Math.max(
-            0,
-            tabs.scrollWidth -
-              tabs.clientWidth
-          );
-
-        const nextScroll =
-          Math.max(
-            0,
-            Math.min(
-              maxScroll,
-              tabs.scrollLeft + delta
-            )
-          );
-
-        /*
-         * 이미 좌우 끝에 도달했다면
-         * 페이지의 일반 세로 스크롤을 허용합니다.
-         */
-        if (
-          nextScroll ===
-          tabs.scrollLeft
-        ) {
-          return;
-        }
-
-        tabs.scrollLeft =
-          nextScroll;
+        tabs.scrollLeft +=
+          event.deltaX ||
+          event.deltaY;
 
         event.preventDefault();
       },
@@ -2507,27 +2377,16 @@
       }
     );
 
-    /*
-     * 드래그가 끝난 직후 발생하는 click으로
-     * 카테고리가 잘못 선택되는 것을 막습니다.
-     */
     tabs.addEventListener(
       "click",
       (event) => {
-        const suppressUntil =
-          Number(
-            tabs.dataset
-              .hmSuppressClickUntil ||
-              0
-          );
-
-        if (
-          Date.now() <
-          suppressUntil
-        ) {
-          event.preventDefault();
-          event.stopPropagation();
+        if (!moved) {
+          return;
         }
+
+        moved = false;
+        event.preventDefault();
+        event.stopPropagation();
       },
       true
     );
@@ -2539,7 +2398,7 @@
   ================================================== */
 
   function bind() {
-    enableDesktopTabScroll();
+    bindPcTabScroll();
     document.addEventListener(
       "click",
       (event) => {
@@ -2672,7 +2531,7 @@
 
     root.setAttribute(
       "data-hm-common-menu",
-      "v1.4.1"
+      "v1.4.2"
     );
 
     document.body.appendChild(
@@ -2685,7 +2544,8 @@
 
 
   /* ==================================================
-     외부 API
+     공개 제어 함수
+     외부 서버 통신 없음
   ================================================== */
 
   window.HMGameMenu =
