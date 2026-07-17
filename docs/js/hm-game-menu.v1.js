@@ -1,5 +1,5 @@
 /*
- * Healing Mart Common Game Menu v1.4.0
+ * Healing Mart Common Game Menu v1.4.1
  * 카테고리 필터, 검색, 현재 게임 표시
  * 상단 오류신고 및 하드코딩 이용안내·저작권
  * 외부 라이브러리 없음
@@ -678,10 +678,45 @@
 
         overscroll-behavior-x:
           contain;
+
+        -webkit-overflow-scrolling:
+          touch;
+
+        touch-action:
+          pan-x;
       }
 
       .hm-menu-tabs::-webkit-scrollbar {
         display:none;
+      }
+
+      /*
+       * PC에서는 카테고리 줄을 마우스로
+       * 잡아 끌거나 휠로 좌우 이동합니다.
+       * 모바일의 손가락 스와이프는 그대로 유지합니다.
+       */
+      @media (
+        min-width:720px
+      ) and (
+        pointer:fine
+      ) {
+        .hm-menu-tabs {
+          cursor:grab;
+          user-select:none;
+          -webkit-user-select:none;
+        }
+
+        .hm-menu-tabs.is-dragging {
+          cursor:grabbing;
+          scroll-behavior:auto;
+        }
+
+        .hm-menu-tabs.is-dragging
+        .hm-menu-tab,
+        .hm-menu-tabs.is-dragging
+        .hm-menu-report-tab {
+          pointer-events:none;
+        }
       }
 
 
@@ -2258,10 +2293,253 @@
 
 
   /* ==================================================
+     PC 카테고리 좌우 이동
+  ================================================== */
+
+  function enableDesktopTabScroll() {
+    const root =
+      document.getElementById(
+        ROOT_ID
+      );
+
+    const tabs =
+      root?.querySelector(
+        ".hm-menu-tabs"
+      );
+
+    if (
+      !tabs ||
+      tabs.dataset
+        .hmDesktopScrollBound ===
+        "true"
+    ) {
+      return;
+    }
+
+    tabs.dataset.hmDesktopScrollBound =
+      "true";
+
+    let dragging = false;
+    let moved = false;
+    let startX = 0;
+    let startScrollLeft = 0;
+    let activePointerId = null;
+
+    const canScroll = () =>
+      tabs.scrollWidth >
+      tabs.clientWidth + 1;
+
+    const finishDrag = (event) => {
+      if (!dragging) {
+        return;
+      }
+
+      dragging = false;
+      tabs.classList.remove(
+        "is-dragging"
+      );
+
+      if (moved) {
+        tabs.dataset
+          .hmSuppressClickUntil =
+          String(Date.now() + 220);
+      }
+
+      if (
+        activePointerId !== null &&
+        tabs.hasPointerCapture?.(
+          activePointerId
+        )
+      ) {
+        try {
+          tabs.releasePointerCapture(
+            activePointerId
+          );
+        } catch (error) {
+          /* 포인터 해제 실패는 무시합니다. */
+        }
+      }
+
+      activePointerId = null;
+
+      if (event) {
+        event.preventDefault?.();
+      }
+    };
+
+    tabs.addEventListener(
+      "pointerdown",
+      (event) => {
+        if (
+          event.pointerType !== "mouse" ||
+          event.button !== 0 ||
+          !canScroll()
+        ) {
+          return;
+        }
+
+        dragging = true;
+        moved = false;
+        startX = event.clientX;
+        startScrollLeft =
+          tabs.scrollLeft;
+        activePointerId =
+          event.pointerId;
+
+        tabs.classList.add(
+          "is-dragging"
+        );
+
+        try {
+          tabs.setPointerCapture(
+            event.pointerId
+          );
+        } catch (error) {
+          /* 포인터 캡처 미지원 환경은 그대로 진행합니다. */
+        }
+      }
+    );
+
+    tabs.addEventListener(
+      "pointermove",
+      (event) => {
+        if (
+          !dragging ||
+          event.pointerId !==
+            activePointerId
+        ) {
+          return;
+        }
+
+        const distance =
+          event.clientX - startX;
+
+        if (Math.abs(distance) > 4) {
+          moved = true;
+        }
+
+        tabs.scrollLeft =
+          startScrollLeft - distance;
+
+        event.preventDefault();
+      }
+    );
+
+    tabs.addEventListener(
+      "pointerup",
+      finishDrag
+    );
+
+    tabs.addEventListener(
+      "pointercancel",
+      finishDrag
+    );
+
+    tabs.addEventListener(
+      "lostpointercapture",
+      () => {
+        if (dragging) {
+          finishDrag();
+        }
+      }
+    );
+
+    /*
+     * PC 일반 마우스의 세로 휠도
+     * 카테고리 줄 위에서는 좌우 이동으로 사용합니다.
+     */
+    tabs.addEventListener(
+      "wheel",
+      (event) => {
+        if (
+          !canScroll() ||
+          !window.matchMedia(
+            "(pointer:fine)"
+          ).matches
+        ) {
+          return;
+        }
+
+        const delta =
+          Math.abs(event.deltaX) >
+          Math.abs(event.deltaY)
+            ? event.deltaX
+            : event.deltaY;
+
+        if (!delta) {
+          return;
+        }
+
+        const maxScroll =
+          Math.max(
+            0,
+            tabs.scrollWidth -
+              tabs.clientWidth
+          );
+
+        const nextScroll =
+          Math.max(
+            0,
+            Math.min(
+              maxScroll,
+              tabs.scrollLeft + delta
+            )
+          );
+
+        /*
+         * 이미 좌우 끝에 도달했다면
+         * 페이지의 일반 세로 스크롤을 허용합니다.
+         */
+        if (
+          nextScroll ===
+          tabs.scrollLeft
+        ) {
+          return;
+        }
+
+        tabs.scrollLeft =
+          nextScroll;
+
+        event.preventDefault();
+      },
+      {
+        passive:false
+      }
+    );
+
+    /*
+     * 드래그가 끝난 직후 발생하는 click으로
+     * 카테고리가 잘못 선택되는 것을 막습니다.
+     */
+    tabs.addEventListener(
+      "click",
+      (event) => {
+        const suppressUntil =
+          Number(
+            tabs.dataset
+              .hmSuppressClickUntil ||
+              0
+          );
+
+        if (
+          Date.now() <
+          suppressUntil
+        ) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      },
+      true
+    );
+  }
+
+
+  /* ==================================================
      이벤트
   ================================================== */
 
   function bind() {
+    enableDesktopTabScroll();
     document.addEventListener(
       "click",
       (event) => {
@@ -2394,7 +2672,7 @@
 
     root.setAttribute(
       "data-hm-common-menu",
-      "v1.4"
+      "v1.4.1"
     );
 
     document.body.appendChild(
