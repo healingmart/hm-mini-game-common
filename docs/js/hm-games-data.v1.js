@@ -62,6 +62,32 @@
       featured: true,
       isNew: true,
       order: 20
+    },
+    {
+      id: "healing-sudoku",
+      title: "힐링 스도쿠",
+      shortTitle: "스도쿠",
+      icon: "🔢",
+      category: "puzzle-strategy",
+      url: "https://www.healing-mart.com/2026/07/sudoku.html",
+      description: "4 x 4, 6 x 6, 9 x 9 퍼즐을 단계별로 풀어 보는 숫자 퍼즐 게임",
+      status: "published",
+      featured: true,
+      isNew: true,
+      order: 30
+    },
+    {
+      id: "omok",
+      title: "한판 오목",
+      shortTitle: "오목",
+      icon: "⚫",
+      category: "puzzle-strategy",
+      url: "https://www.healing-mart.com/2026/07/Gomoku.html",
+      description: "컴퓨터 AI 또는 친구와 대결하며 다섯 개의 돌을 먼저 연결하는 오목 게임",
+      status: "published",
+      featured: true,
+      isNew: true,
+      order: 40
     }
   ]);
 })();
