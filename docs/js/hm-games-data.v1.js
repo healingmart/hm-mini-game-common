@@ -180,6 +180,25 @@
       featured: true,
       isNew: true,
       order: 60
+    }),
+
+    Object.freeze({
+      id: "minesweeper",
+      title: "지뢰찾기",
+      shortTitle: "지뢰찾기",
+      icon: "💣",
+      category: "puzzle-strategy",
+
+      url:
+        "https://www.healing-mart.com/REPLACE-WITH-MINESWEEPER-URL.html",
+
+      description:
+        "초급부터 극한 도전까지 다양한 난이도와 타임어택, 오늘의 도전을 즐길 수 있는 전략 퍼즐 지뢰찾기 게임",
+
+      status: "published",
+      featured: true,
+      isNew: true,
+      order: 70
     })
   ]);
 })();
