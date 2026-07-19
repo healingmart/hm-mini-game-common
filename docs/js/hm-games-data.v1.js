@@ -190,7 +190,7 @@
       category: "puzzle-strategy",
 
       url:
-        "https://www.healing-mart.com/REPLACE-WITH-MINESWEEPER-URL.html",
+        "https://www.healing-mart.com/2026/07/minesweeper.html",
 
       description:
         "초급부터 극한 도전까지 다양한 난이도와 타임어택, 오늘의 도전을 즐길 수 있는 전략 퍼즐 지뢰찾기 게임",
