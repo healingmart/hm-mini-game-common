@@ -199,6 +199,25 @@
       featured: true,
       isNew: true,
       order: 70
+    }),
+
+    Object.freeze({
+      id: "flag-capital-quiz",
+      title: "국기·수도 퀴즈",
+      shortTitle: "국기·수도 퀴즈",
+      icon: "🌍",
+      category: "word-quiz",
+
+      url:
+        "https://www.healing-mart.com/REPLACE-WITH-FLAG-CAPITAL-QUIZ-URL.html",
+
+      description:
+        "197개 국가·지역의 국기와 수도를 학습하고 실전 퀴즈, 세계 완주, 저장형 학습 모드를 즐기는 세계 지리 퀴즈",
+
+      status: "draft",
+      featured: true,
+      isNew: true,
+      order: 80
     })
   ]);
 })();
