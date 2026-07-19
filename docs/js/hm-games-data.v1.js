@@ -209,7 +209,7 @@
       category: "word-quiz",
 
       url:
-        "https://www.healing-mart.com/2026/07/Flag-and-Capital-Quiz.html",
+        "https://www.healing-mart.com/2026/07/Flag-and-Capital-Quiz.html", 
 
       description:
         "197개 국가·지역의 국기와 수도를 학습하고 실전 퀴즈, 세계 완주, 저장형 학습 모드를 즐기는 세계 지리 퀴즈",
