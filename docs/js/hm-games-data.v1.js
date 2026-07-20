@@ -233,7 +233,7 @@
       description:
         "197개 국가·지역과 수도를 타이핑하며 세계를 여행하고 타자 속도, 정확도, 콤보와 최고 기록에 도전하는 세계 지리 타이핑 게임",
 
-      status: "draft",
+   status: "published",
       featured: true,
       isNew: true,
       order: 90
