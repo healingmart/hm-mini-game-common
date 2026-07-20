@@ -1,7 +1,4 @@
-from pathlib import Path
-import subprocess, textwrap
-
-content = r'''/*
+/*
  * Healing Mart Mini Game Registry v1.2.0
  *
  * 새 게임을 발행하면 window.HM_GAMES에
@@ -262,17 +259,3 @@ content = r'''/*
     })
   ]);
 })();
-'''
-
-path = Path("/mnt/data/hm-games-data.v1.js")
-path.write_text(content, encoding="utf-8")
-
-proc = subprocess.run(
-    ["node", "--check", str(path)],
-    capture_output=True,
-    text=True,
-    timeout=30
-)
-
-print("파일 생성:", path)
-print("JavaScript 문법 검사:", "통과" if proc.returncode == 0 else proc.stderr)
