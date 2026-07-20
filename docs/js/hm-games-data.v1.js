@@ -1,4 +1,7 @@
-/*
+from pathlib import Path
+import subprocess, textwrap
+
+content = r'''/*
  * Healing Mart Mini Game Registry v1.2.0
  *
  * 새 게임을 발행하면 window.HM_GAMES에
@@ -233,10 +236,43 @@
       description:
         "197개 국가·지역과 수도를 타이핑하며 세계를 여행하고 타자 속도, 정확도, 콤보와 최고 기록에 도전하는 세계 지리 타이핑 게임",
 
-   status: "published",
+      status: "published",
       featured: true,
       isNew: true,
       order: 90
+    }),
+
+    Object.freeze({
+      id: "one-second",
+      title: "1초 정확히 맞추기",
+      shortTitle: "시간 감각 챌린지",
+      icon: "⏱️",
+      category: "reaction-timing",
+
+      url:
+        "https://www.healing-mart.com/2026/07/Stopwatch-Game.html",
+
+      description:
+        "시간을 보지 않고 체감으로 1초부터 1분까지 맞히는 5회 시간 감각 챌린지",
+
+      status: "published",
+      featured: true,
+      isNew: true,
+      order: 100
     })
   ]);
 })();
+'''
+
+path = Path("/mnt/data/hm-games-data.v1.js")
+path.write_text(content, encoding="utf-8")
+
+proc = subprocess.run(
+    ["node", "--check", str(path)],
+    capture_output=True,
+    text=True,
+    timeout=30
+)
+
+print("파일 생성:", path)
+print("JavaScript 문법 검사:", "통과" if proc.returncode == 0 else proc.stderr)
