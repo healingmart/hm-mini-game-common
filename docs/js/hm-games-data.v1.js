@@ -294,6 +294,25 @@
       featured: true,
       isNew: true,
       order: 120
+    }),
+
+    Object.freeze({
+      id: "proverb-complete",
+      title: "사자성어 100",
+      shortTitle: "사자성어 100",
+      icon: "📚",
+      category: "word-quiz",
+
+      url:
+        "https://www.healing-mart.com/2026/07/four-character-idiom-100.html",
+
+      description:
+        "사자성어 100개를 학습하고 두 글자 완성, 뜻 맞히기, OX, 직접 쓰기, 연결 퀴즈와 100단계 마스터에 도전하는 사자성어 학습 게임",
+
+      status: "published",
+      featured: true,
+      isNew: true,
+      order: 130
     })
   ]);
 })();
