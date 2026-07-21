@@ -275,6 +275,25 @@
       featured: true,
       isNew: true,
       order: 110
+    }),
+
+    Object.freeze({
+      id: "basketball-shot",
+      title: "농구 슛",
+      shortTitle: "농구 슛",
+      icon: "🏀",
+      category: "reaction-timing",
+
+      url:
+        "https://www.healing-mart.com/2026/07/Basketball-Rush.html",
+
+      description:
+        "스와이프로 슛을 던지고 20단계 챌린지, 자유투, 60초 모드와 움직이는 골대에 도전하는 3D 농구 슈팅 게임",
+
+      status: "published",
+      featured: true,
+      isNew: true,
+      order: 120
     })
   ]);
 })();
