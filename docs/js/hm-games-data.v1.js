@@ -256,6 +256,25 @@
       featured: true,
       isNew: true,
       order: 100
+    }),
+
+    Object.freeze({
+      id: "stop-the-car",
+      title: "정확히 멈춰!",
+      shortTitle: "정확히 멈춰!",
+      icon: "🚗",
+      category: "reaction-timing",
+
+      url:
+        "https://www.healing-mart.com/2026/07/Stop-The-Car.html",
+
+      description:
+        "빠르게 날아오는 대상이 목표 외형선과 겹치는 순간 멈춰 정합도와 최고 스테이지에 도전하는 타이밍 게임",
+
+      status: "published",
+      featured: true,
+      isNew: true,
+      order: 110
     })
   ]);
 })();
