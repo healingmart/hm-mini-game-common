@@ -313,6 +313,25 @@
       featured: true,
       isNew: true,
       order: 130
+    }),
+
+    Object.freeze({
+      id: "cube-match-three",
+      title: "3D 큐브 맞추기",
+      shortTitle: "3D 큐브",
+      icon: "🧊",
+      category: "puzzle-strategy",
+
+      url:
+        "https://www.healing-mart.com/2026/07/CUBEGAME.HTML",
+
+      description:
+        "손가락으로 3 x 3 큐브의 면과 줄을 직접 돌리고 힌트와 회전 도구를 활용해 완성 기록에 도전하는 3D 큐브 퍼즐 게임",
+
+      status: "published",
+      featured: true,
+      isNew: true,
+      order: 140
     })
   ]);
 })();
