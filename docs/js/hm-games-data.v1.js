@@ -1,5 +1,5 @@
 /*
- * Healing Mart Mini Game Registry v1.2.1
+ * Healing Mart Mini Game Registry v1.2.0
  *
  * 새 게임을 발행하면 window.HM_GAMES에
  * 게임 객체 하나만 추가하세요.
