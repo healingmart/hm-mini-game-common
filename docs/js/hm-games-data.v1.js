@@ -1,5 +1,7 @@
-/*
- * Healing Mart Mini Game Registry v1.2.0
+from pathlib import Path
+
+content = r'''/*
+ * Healing Mart Mini Game Registry v1.2.1
  *
  * 새 게임을 발행하면 window.HM_GAMES에
  * 게임 객체 하나만 추가하세요.
@@ -351,6 +353,32 @@
       featured: true,
       isNew: true,
       order: 150
+    }),
+
+    Object.freeze({
+      id: "economy-finance-quiz",
+      title: "경제 금융 상식 100",
+      shortTitle: "경제 퀴즈",
+      icon: "💰",
+      category: "word-quiz",
+
+      url:
+        "https://www.healing-mart.com/2026/07/Economic-quiz.html",
+
+      description:
+        "예금, 대출, 신용, 보험, 연금, 투자 위험과 금융사기 예방 등 생활에 필요한 경제 금융 상식 100개를 학습하고 다양한 퀴즈와 100단계에 도전하는 금융 학습 게임",
+
+      status: "published",
+      featured: true,
+      isNew: true,
+      order: 160
     })
   ]);
 })();
+'''
+
+out = Path("/mnt/data/hm-games-data.v1.2.1.js")
+out.write_text(content, encoding="utf-8")
+
+print(out)
+print(f"size={out.stat().st_size}")
