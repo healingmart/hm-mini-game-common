@@ -332,6 +332,25 @@
       featured: true,
       isNew: true,
       order: 140
+    }),
+
+    Object.freeze({
+      id: "retro-picture-puzzle",
+      title: "추억의 그림 퍼즐",
+      shortTitle: "그림 퍼즐",
+      icon: "🖼️",
+      category: "puzzle-strategy",
+
+      url:
+        "https://www.healing-mart.com/2026/07/Picture-Puzzle.html",
+
+      description:
+        "감성적인 작품을 선택해 3 x 3, 4 x 4, 5 x 5 조각을 움직이고 완성 기록에 도전하는 슬라이딩 그림 퍼즐 게임",
+
+      status: "published",
+      featured: true,
+      isNew: true,
+      order: 150
     })
   ]);
 })();
