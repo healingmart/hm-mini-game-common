@@ -1,6 +1,4 @@
-from pathlib import Path
-
-content = r'''/*
+/*
  * Healing Mart Mini Game Registry v1.2.1
  *
  * 새 게임을 발행하면 window.HM_GAMES에
@@ -357,7 +355,7 @@ content = r'''/*
 
     Object.freeze({
       id: "economy-finance-quiz",
-      title: "경제 금융 상식 100",
+      title: "경제 금융 생활상식 100",
       shortTitle: "경제 퀴즈",
       icon: "💰",
       category: "word-quiz",
@@ -375,10 +373,3 @@ content = r'''/*
     })
   ]);
 })();
-'''
-
-out = Path("/mnt/data/hm-games-data.v1.2.1.js")
-out.write_text(content, encoding="utf-8")
-
-print(out)
-print(f"size={out.stat().st_size}")
