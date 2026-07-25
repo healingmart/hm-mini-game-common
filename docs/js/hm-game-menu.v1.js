@@ -1,7 +1,7 @@
 /*
- * Healing Mart Common Game Menu v1.5.1
+ * Healing Mart Common Game Menu v1.5.2
  * 카테고리 필터, 검색, 현재 게임 표시
- * 기존 바텀시트 유지, 하단 공유 버튼 및 SNS 공유창
+ * 기존 게임 선택 바텀시트 유지, 별도 고정 하단바 없음, 중앙 SNS 공유창
  * 외부 라이브러리 없음
  */
 (() => {
@@ -1245,34 +1245,34 @@
       .hm-menu-share-sheet {
         position:fixed;
         left:50%;
-        bottom:14px;
+        top:50%;
         z-index:2147483330;
         width:min(560px,calc(100% - 24px));
-        padding:10px 18px max(20px,env(safe-area-inset-bottom));
+        max-height:calc(100dvh - 32px);
+        padding:18px 18px 22px;
+        overflow:auto;
         border:1px solid #c9d4e1;
         border-radius:24px;
-        background:rgba(255,255,255,.98);
-        box-shadow:0 18px 54px rgba(15,23,42,.28);
+        background:rgba(255,255,255,.99);
+        box-shadow:0 24px 70px rgba(15,23,42,.30);
         -webkit-backdrop-filter:blur(16px);
         backdrop-filter:blur(16px);
-        transform:translate(-50%,calc(100% + 36px));
+        transform:translate(-50%,-46%) scale(.97);
         opacity:0;
         visibility:hidden;
-        transition:transform .24s ease,opacity .2s ease,visibility .2s ease;
+        pointer-events:none;
+        transition:transform .22s ease,opacity .18s ease,visibility .18s ease;
       }
 
       .hm-menu-share-sheet.is-open {
-        transform:translate(-50%,0);
+        transform:translate(-50%,-50%) scale(1);
         opacity:1;
         visibility:visible;
+        pointer-events:auto;
       }
 
       .hm-menu-share-handle {
-        width:44px;
-        height:5px;
-        margin:0 auto 10px;
-        border-radius:999px;
-        background:#d2dbe7;
+        display:none;
       }
 
       .hm-menu-share-head {
@@ -1404,17 +1404,10 @@
 
       @media(max-width:640px) {
         .hm-menu-share-sheet {
-          left:0;
-          right:0;
-          bottom:0;
-          width:100%;
-          border-bottom:0;
-          border-radius:24px 24px 0 0;
-          transform:translateY(104%);
-        }
-
-        .hm-menu-share-sheet.is-open {
-          transform:translateY(0);
+          width:calc(100% - 20px);
+          max-height:calc(100dvh - 20px);
+          padding:16px 14px 20px;
+          border-radius:22px;
         }
 
         .hm-menu-share-buttons {
@@ -2957,7 +2950,7 @@
 
     root.setAttribute(
       "data-hm-common-menu",
-      "v1.5.1"
+      "v1.5.2"
     );
 
     document.body.appendChild(
