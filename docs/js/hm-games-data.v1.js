@@ -1,5 +1,5 @@
 /*
- * Healing Mart Mini Game Registry v1.2.0
+ * Healing Mart Mini Game Registry v1.3.0
  *
  * 새 게임을 발행하면 window.HM_GAMES에
  * 게임 객체 하나만 추가하세요.
@@ -354,6 +354,25 @@
     }),
 
     Object.freeze({
+      id: "jigsaw-puzzle",
+      title: "직소 퍼즐",
+      shortTitle: "직소 퍼즐",
+      icon: "🧩",
+      category: "puzzle-strategy",
+
+      url:
+        "https://www.healing-mart.com/2026/07/Jigsaw-Puzzle.html",
+
+      description:
+        "감성적인 작품을 선택해 16, 36, 64, 144개의 직소 조각을 맞추고 완성 기록에 도전하는 정통 직소 퍼즐 게임",
+
+      status: "published",
+      featured: true,
+      isNew: true,
+      order: 160
+    }),
+
+    Object.freeze({
       id: "economy-finance-quiz",
       title: "경제 금융 생활상식 100",
       shortTitle: "경제 퀴즈",
@@ -369,7 +388,7 @@
       status: "published",
       featured: true,
       isNew: true,
-      order: 160
+      order: 170
     })
   ]);
 })();
