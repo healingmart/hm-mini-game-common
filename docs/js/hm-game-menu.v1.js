@@ -95,15 +95,6 @@
         .currentGame.trim();
     }
 
-    const app =
-      document.querySelector(
-        "[data-game-id]"
-      );
-
-    if (app?.dataset.gameId) {
-      return app.dataset.gameId.trim();
-    }
-
     const loader =
       document.querySelector(
         "script[data-game]"
@@ -111,6 +102,15 @@
 
     if (loader?.dataset.game) {
       return loader.dataset.game.trim();
+    }
+
+    const app =
+      document.querySelector(
+        "[data-game-id]"
+      );
+
+    if (app?.dataset.gameId) {
+      return app.dataset.gameId.trim();
     }
 
     return "";
@@ -661,9 +661,21 @@
     );
 
     const trigger =
-      document.querySelector(
-        "[data-hm-game-menu-open]"
-      );
+      Array.from(
+        document.querySelectorAll(
+          "[data-hm-game-menu-open]"
+        )
+      ).find((node) => {
+        const rect =
+          node.getBoundingClientRect();
+
+        return (
+          rect.width > 0 &&
+          rect.height > 0 &&
+          getComputedStyle(node)
+            .visibility !== "hidden"
+        );
+      });
 
     if (
       trigger &&
