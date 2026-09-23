@@ -1,5 +1,5 @@
 /*
- * Healing Mart Common Game Menu v1.5.2
+ * Healing Mart Common Game Menu v1.6.0
  * 카테고리 필터, 검색, 현재 게임 표시
  * 기존 게임 선택 바텀시트 유지, 별도 고정 하단바 없음, 중앙 SNS 공유창
  * 외부 라이브러리 없음
@@ -21,6 +21,18 @@
 
   const QNA_URL =
     "https://www.healing-mart.com/p/qna.html";
+
+  const LIKE_API_BASE =
+    "https://168.110.24.35.sslip.io";
+
+  const LIKE_CLIENT_STORAGE =
+    "hm.common.game-like-client.v1";
+
+  const LIKE_WIDGET_ID =
+    "hmCommonGameLike";
+
+  const LIKE_STYLE_ID =
+    "hmCommonGameLikeStyle";
 
   const FIXED_SUPPORT = Object.freeze({
     title: "이용안내 및 저작권",
@@ -45,7 +57,10 @@
     query: "",
     returnFocus: null,
     shareOpen: false,
-    shareMoreOpen: false
+    shareMoreOpen: false,
+    likeCount: 0,
+    likeLiked: false,
+    likeLoading: false
   };
 
 
@@ -256,6 +271,431 @@
       });
   }
 
+
+
+
+  /* ==================================================
+     공통 좋아요
+  ================================================== */
+
+  function getLikeClientId() {
+    try {
+      const saved =
+        localStorage.getItem(
+          LIKE_CLIENT_STORAGE
+        ) || "";
+
+      if (
+        /^[A-Za-z0-9_-]{8,80}$/
+          .test(saved)
+      ) {
+        return saved;
+      }
+
+      const randomPart =
+        globalThis.crypto
+          ?.randomUUID?.()
+          ?.replace(
+            /[^A-Za-z0-9_-]/g,
+            ""
+          ) ||
+        (
+          Math.random()
+            .toString(36)
+            .slice(2) +
+          Date.now()
+            .toString(36)
+        );
+
+      const id =
+        ("hm-like-" + randomPart)
+          .slice(0, 80);
+
+      localStorage.setItem(
+        LIKE_CLIENT_STORAGE,
+        id
+      );
+
+      return id;
+    } catch (error) {
+      return (
+        "hm-like-" +
+        Math.random()
+          .toString(36)
+          .slice(2) +
+        Date.now()
+          .toString(36)
+      ).slice(0, 80);
+    }
+  }
+
+
+  function getLikeUrl(gameId) {
+    return (
+      LIKE_API_BASE +
+      "/api/v1/games/" +
+      encodeURIComponent(gameId) +
+      "/likes"
+    );
+  }
+
+
+  function ensureLikeStyle() {
+    if (
+      document.getElementById(
+        LIKE_STYLE_ID
+      )
+    ) {
+      return;
+    }
+
+    const style =
+      document.createElement("style");
+
+    style.id =
+      LIKE_STYLE_ID;
+
+    style.textContent =
+      "#" + LIKE_WIDGET_ID + "{" +
+      "appearance:none;-webkit-appearance:none;" +
+      "min-width:58px;height:34px;display:inline-flex;" +
+      "align-items:center;justify-content:center;gap:5px;" +
+      "flex:0 0 auto;padding:0 10px;margin-left:7px;" +
+      "color:#59677c;border:1px solid rgba(151,166,188,.42);" +
+      "border-radius:999px;background:rgba(255,255,255,.94);" +
+      "box-shadow:0 5px 14px rgba(27,48,78,.10);" +
+      "font:800 12px/1 system-ui,-apple-system,Segoe UI,sans-serif;" +
+      "cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;" +
+      "transition:transform .16s ease,background .16s ease,border-color .16s ease,color .16s ease,opacity .16s ease}" +
+      "#" + LIKE_WIDGET_ID + ":hover{border-color:#ef9bab;background:#fff7f9;color:#dc536b}" +
+      "#" + LIKE_WIDGET_ID + ":active{transform:scale(.96)}" +
+      "#" + LIKE_WIDGET_ID + ".is-liked{color:#e24663;border-color:#f3a5b3;background:#fff3f6}" +
+      "#" + LIKE_WIDGET_ID + ".is-loading{opacity:.62;cursor:wait}" +
+      "#" + LIKE_WIDGET_ID + " .hm-game-like-heart{font-size:17px;line-height:1}" +
+      "#" + LIKE_WIDGET_ID + " .hm-game-like-count{min-width:12px;text-align:left;font-variant-numeric:tabular-nums}" +
+      "#" + LIKE_WIDGET_ID + ".hm-game-like-floating{position:fixed;right:14px;bottom:16px;z-index:2147483200;margin:0}" +
+      "body.hm-game-menu-open #" + LIKE_WIDGET_ID + ".hm-game-like-floating{opacity:0;pointer-events:none}" +
+      "@media(max-width:420px){#" + LIKE_WIDGET_ID + "{min-width:54px;height:32px;padding:0 8px;gap:4px;margin-left:5px;font-size:11px}" +
+      "#" + LIKE_WIDGET_ID + " .hm-game-like-heart{font-size:16px}}" +
+      "@media(prefers-reduced-motion:reduce){#" + LIKE_WIDGET_ID + "{transition:none}}";
+
+    document.head.appendChild(
+      style
+    );
+  }
+
+
+  function renderGameLike() {
+    const button =
+      document.getElementById(
+        LIKE_WIDGET_ID
+      );
+
+    if (!button) {
+      return;
+    }
+
+    const heart =
+      button.querySelector(
+        ".hm-game-like-heart"
+      );
+
+    const count =
+      button.querySelector(
+        ".hm-game-like-count"
+      );
+
+    button.classList.toggle(
+      "is-liked",
+      state.likeLiked
+    );
+
+    button.classList.toggle(
+      "is-loading",
+      state.likeLoading
+    );
+
+    button.setAttribute(
+      "aria-pressed",
+      state.likeLiked
+        ? "true"
+        : "false"
+    );
+
+    button.setAttribute(
+      "aria-label",
+      (
+        state.likeLiked
+          ? "좋아요 취소"
+          : "좋아요"
+      ) +
+      ", 현재 " +
+      Math.max(
+        0,
+        Number(state.likeCount) || 0
+      ) +
+      "개"
+    );
+
+    if (heart) {
+      heart.textContent =
+        state.likeLiked
+          ? "♥"
+          : "♡";
+    }
+
+    if (count) {
+      count.textContent =
+        String(
+          Math.max(
+            0,
+            Math.round(
+              Number(
+                state.likeCount
+              ) || 0
+            )
+          )
+        );
+    }
+  }
+
+
+  async function loadGameLike() {
+    const gameId =
+      getCurrentGameId();
+
+    if (!gameId) {
+      return;
+    }
+
+    state.currentGameId =
+      gameId;
+
+    try {
+      const response =
+        await fetch(
+          getLikeUrl(gameId) +
+          "?clientId=" +
+          encodeURIComponent(
+            getLikeClientId()
+          ),
+          {
+            method:"GET",
+            mode:"cors",
+            credentials:"omit",
+            cache:"no-store",
+            headers:{
+              Accept:"application/json"
+            }
+          }
+        );
+
+      if (!response.ok) {
+        throw new Error(
+          "LIKE_HTTP_" +
+          response.status
+        );
+      }
+
+      const payload =
+        await response.json();
+
+      if (!payload?.ok) {
+        throw new Error(
+          "LIKE_INVALID_RESPONSE"
+        );
+      }
+
+      state.likeCount =
+        Math.max(
+          0,
+          Number(
+            payload.count
+          ) || 0
+        );
+
+      state.likeLiked =
+        Boolean(
+          payload.liked
+        );
+
+      renderGameLike();
+    } catch (error) {
+      console.warn(
+        "[HM Game Like]",
+        error
+      );
+    }
+  }
+
+
+  async function toggleGameLike() {
+    const gameId =
+      getCurrentGameId();
+
+    if (
+      !gameId ||
+      state.likeLoading
+    ) {
+      return;
+    }
+
+    state.likeLoading = true;
+    renderGameLike();
+
+    try {
+      const response =
+        await fetch(
+          getLikeUrl(gameId),
+          {
+            method:"POST",
+            mode:"cors",
+            credentials:"omit",
+            cache:"no-store",
+            headers:{
+              "Content-Type":
+                "application/json",
+              Accept:
+                "application/json"
+            },
+            body:
+              JSON.stringify({
+                clientId:
+                  getLikeClientId()
+              })
+          }
+        );
+
+      if (!response.ok) {
+        throw new Error(
+          "LIKE_HTTP_" +
+          response.status
+        );
+      }
+
+      const payload =
+        await response.json();
+
+      if (!payload?.ok) {
+        throw new Error(
+          "LIKE_INVALID_RESPONSE"
+        );
+      }
+
+      state.likeCount =
+        Math.max(
+          0,
+          Number(
+            payload.count
+          ) || 0
+        );
+
+      state.likeLiked =
+        Boolean(
+          payload.liked
+        );
+    } catch (error) {
+      console.warn(
+        "[HM Game Like]",
+        error
+      );
+    } finally {
+      state.likeLoading = false;
+      renderGameLike();
+    }
+  }
+
+
+  function mountGameLike() {
+    if (
+      document.getElementById(
+        LIKE_WIDGET_ID
+      )
+    ) {
+      loadGameLike();
+      return;
+    }
+
+    if (!getCurrentGameId()) {
+      return;
+    }
+
+    ensureLikeStyle();
+
+    const button =
+      document.createElement(
+        "button"
+      );
+
+    button.id =
+      LIKE_WIDGET_ID;
+
+    button.type =
+      "button";
+
+    button.setAttribute(
+      "aria-pressed",
+      "false"
+    );
+
+    button.innerHTML =
+      '<span class="hm-game-like-heart" aria-hidden="true">♡</span>' +
+      '<span class="hm-game-like-count">0</span>';
+
+    button.addEventListener(
+      "click",
+      (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        toggleGameLike();
+      }
+    );
+
+    const trigger =
+      document.querySelector(
+        "[data-hm-game-menu-open]"
+      );
+
+    if (
+      trigger &&
+      trigger.parentElement
+    ) {
+      trigger.insertAdjacentElement(
+        "afterend",
+        button
+      );
+    } else {
+      button.classList.add(
+        "hm-game-like-floating"
+      );
+
+      document.body.appendChild(
+        button
+      );
+    }
+
+    renderGameLike();
+    loadGameLike();
+  }
+
+
+  function refreshGameLike() {
+    const currentId =
+      getCurrentGameId();
+
+    if (
+      currentId !==
+      state.currentGameId
+    ) {
+      state.likeCount = 0;
+      state.likeLiked = false;
+    }
+
+    state.currentGameId =
+      currentId;
+
+    mountGameLike();
+  }
 
   /* ==================================================
      스타일
@@ -2942,6 +3382,7 @@
 
     updateGameTitleCaptions();
     updateExternalQnaLinks();
+    mountGameLike();
 
     const root =
       document.createElement("div");
@@ -2950,7 +3391,7 @@
 
     root.setAttribute(
       "data-hm-common-menu",
-      "v1.5.2"
+      "v1.6.0"
     );
 
     document.body.appendChild(
@@ -2991,6 +3432,7 @@
 
         updateGameTitleCaptions();
         updateExternalQnaLinks();
+        refreshGameLike();
         renderControls();
       }
     });
