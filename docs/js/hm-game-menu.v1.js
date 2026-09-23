@@ -1,5 +1,5 @@
 /*
- * Healing Mart Common Game Menu v1.6.1
+ * Healing Mart Common Game Menu v1.6.2
  * 카테고리 필터, 검색, 현재 게임 표시
  * 기존 게임 선택 바텀시트 유지, 별도 고정 하단바 없음, 중앙 SNS 공유창
  * 외부 라이브러리 없음
@@ -393,26 +393,30 @@
 
     style.textContent =
       "#" + LIKE_WIDGET_ID + "{" +
-      "appearance:none;-webkit-appearance:none;" +
-      "min-width:58px;height:34px;display:inline-flex;" +
-      "align-items:center;justify-content:center;gap:5px;" +
-      "flex:0 0 auto;padding:0 10px;margin-left:7px;" +
-      "color:#59677c;border:1px solid rgba(151,166,188,.42);" +
-      "border-radius:999px;background:rgba(255,255,255,.94);" +
-      "box-shadow:0 5px 14px rgba(27,48,78,.10);" +
-      "font:800 12px/1 system-ui,-apple-system,Segoe UI,sans-serif;" +
-      "cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;" +
+      "appearance:none!important;-webkit-appearance:none!important;" +
+      "box-sizing:border-box!important;width:58px!important;min-width:58px!important;max-width:58px!important;" +
+      "height:34px!important;min-height:34px!important;max-height:34px!important;" +
+      "display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:5px!important;" +
+      "flex:0 0 58px!important;padding:0 8px!important;margin:0 0 0 6px!important;" +
+      "color:#5f6876!important;border:1px solid #dde2e8!important;" +
+      "border-radius:999px!important;background:rgba(255,255,255,.96)!important;" +
+      "box-shadow:0 2px 8px rgba(32,45,65,.08)!important;" +
+      "font-family:system-ui,-apple-system,Segoe UI,sans-serif!important;font-size:12px!important;font-weight:800!important;line-height:1!important;" +
+      "letter-spacing:0!important;text-transform:none!important;white-space:nowrap!important;" +
+      "cursor:pointer!important;user-select:none;-webkit-tap-highlight-color:transparent;" +
       "transition:transform .16s ease,background .16s ease,border-color .16s ease,color .16s ease,opacity .16s ease}" +
-      "#" + LIKE_WIDGET_ID + ":hover{border-color:#ef9bab;background:#fff7f9;color:#dc536b}" +
+      "#" + LIKE_WIDGET_ID + ":hover{border-color:#e7a6b1!important;background:#fff7f8!important;color:#d84f67!important}" +
       "#" + LIKE_WIDGET_ID + ":active{transform:scale(.96)}" +
-      "#" + LIKE_WIDGET_ID + ".is-liked{color:#e24663;border-color:#f3a5b3;background:#fff3f6}" +
-      "#" + LIKE_WIDGET_ID + ".is-loading{opacity:.62;cursor:wait}" +
-      "#" + LIKE_WIDGET_ID + " .hm-game-like-heart{font-size:17px;line-height:1}" +
-      "#" + LIKE_WIDGET_ID + " .hm-game-like-count{min-width:12px;text-align:left;font-variant-numeric:tabular-nums}" +
-      "#" + LIKE_WIDGET_ID + ".hm-game-like-floating{position:fixed;right:14px;bottom:16px;z-index:2147483200;margin:0}" +
+      "#" + LIKE_WIDGET_ID + ".is-liked{color:#df4862!important;border-color:#edbac3!important;background:#fff4f6!important}" +
+      "#" + LIKE_WIDGET_ID + ".is-loading{opacity:.62;cursor:wait!important}" +
+      "#" + LIKE_WIDGET_ID + " .hm-game-like-heart{font-size:16px!important;font-weight:800!important;line-height:1!important}" +
+      "#" + LIKE_WIDGET_ID + " .hm-game-like-count{min-width:12px!important;text-align:left!important;font-size:11px!important;font-weight:800!important;line-height:1!important;font-variant-numeric:tabular-nums}" +
+      "#" + LIKE_WIDGET_ID + ".hm-game-like-floating{position:fixed!important;right:14px!important;top:14px!important;bottom:auto!important;z-index:2147483200!important;margin:0!important}" +
       "body.hm-game-menu-open #" + LIKE_WIDGET_ID + ".hm-game-like-floating{opacity:0;pointer-events:none}" +
-      "@media(max-width:420px){#" + LIKE_WIDGET_ID + "{min-width:54px;height:32px;padding:0 8px;gap:4px;margin-left:5px;font-size:11px}" +
-      "#" + LIKE_WIDGET_ID + " .hm-game-like-heart{font-size:16px}}" +
+      "@media(max-width:420px){#" + LIKE_WIDGET_ID + "{width:54px!important;min-width:54px!important;max-width:54px!important;" +
+      "height:32px!important;min-height:32px!important;max-height:32px!important;flex-basis:54px!important;padding:0 7px!important;gap:4px!important;margin-left:5px!important;font-size:11px!important}" +
+      "#" + LIKE_WIDGET_ID + " .hm-game-like-heart{font-size:16px!important}" +
+      "#" + LIKE_WIDGET_ID + ".hm-game-like-floating{right:14px!important;top:14px!important}}" +
       "@media(prefers-reduced-motion:reduce){#" + LIKE_WIDGET_ID + "{transition:none}}";
 
     document.head.appendChild(
@@ -3462,7 +3466,7 @@
 
     root.setAttribute(
       "data-hm-common-menu",
-      "v1.6.1"
+      "v1.6.2"
     );
 
     document.body.appendChild(
