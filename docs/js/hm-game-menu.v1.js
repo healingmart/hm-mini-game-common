@@ -1,5 +1,5 @@
 /*
- * Healing Mart Common Game Menu v1.6.0
+ * Healing Mart Common Game Menu v1.6.1
  * 카테고리 필터, 검색, 현재 게임 표시
  * 기존 게임 선택 바텀시트 유지, 별도 고정 하단바 없음, 중앙 SNS 공유창
  * 외부 라이브러리 없음
@@ -82,6 +82,27 @@
     );
 
 
+  const GAME_ID_ALIASES =
+    Object.freeze({
+      "cube-match":
+        "cube-match-three",
+      "economy-finance-life100":
+        "economy-finance-quiz"
+    });
+
+
+  function canonicalGameId(value) {
+    const id =
+      String(value || "")
+        .trim();
+
+    return (
+      GAME_ID_ALIASES[id] ||
+      id
+    );
+  }
+
+
   function getCurrentGameId() {
     const explicit =
       document.querySelector(
@@ -91,8 +112,10 @@
     if (
       explicit?.dataset.currentGame
     ) {
-      return explicit.dataset
-        .currentGame.trim();
+      return canonicalGameId(
+        explicit.dataset
+          .currentGame
+      );
     }
 
     const loader =
@@ -101,7 +124,9 @@
       );
 
     if (loader?.dataset.game) {
-      return loader.dataset.game.trim();
+      return canonicalGameId(
+        loader.dataset.game
+      );
     }
 
     const app =
@@ -110,7 +135,9 @@
       );
 
     if (app?.dataset.gameId) {
-      return app.dataset.gameId.trim();
+      return canonicalGameId(
+        app.dataset.gameId
+      );
     }
 
     return "";
@@ -684,6 +711,29 @@
       trigger.insertAdjacentElement(
         "afterend",
         button
+      );
+
+      window.setTimeout(
+        () => {
+          const rect =
+            button.getBoundingClientRect();
+
+          if (
+            rect.width <= 0 ||
+            rect.height <= 0 ||
+            getComputedStyle(button)
+              .visibility === "hidden"
+          ) {
+            button.classList.add(
+              "hm-game-like-floating"
+            );
+
+            document.body.appendChild(
+              button
+            );
+          }
+        },
+        180
       );
     } else {
       button.classList.add(
@@ -3412,7 +3462,7 @@
 
     root.setAttribute(
       "data-hm-common-menu",
-      "v1.6.0"
+      "v1.6.1"
     );
 
     document.body.appendChild(
