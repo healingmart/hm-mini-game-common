@@ -104,6 +104,15 @@
       return app.dataset.gameId.trim();
     }
 
+    const loader =
+      document.querySelector(
+        "script[data-game]"
+      );
+
+    if (loader?.dataset.game) {
+      return loader.dataset.game.trim();
+    }
+
     return "";
   }
 
