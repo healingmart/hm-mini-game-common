@@ -1,5 +1,5 @@
 /*
- * Healing Mart Common Game Menu v1.6.2
+ * Healing Mart Common Game Menu v1.6.3
  * 카테고리 필터, 검색, 현재 게임 표시
  * 기존 게임 선택 바텀시트 유지, 별도 고정 하단바 없음, 중앙 SNS 공유창
  * 외부 라이브러리 없음
@@ -411,8 +411,9 @@
       "#" + LIKE_WIDGET_ID + ".is-loading{opacity:.62;cursor:wait!important}" +
       "#" + LIKE_WIDGET_ID + " .hm-game-like-heart{font-size:16px!important;font-weight:800!important;line-height:1!important}" +
       "#" + LIKE_WIDGET_ID + " .hm-game-like-count{min-width:12px!important;text-align:left!important;font-size:11px!important;font-weight:800!important;line-height:1!important;font-variant-numeric:tabular-nums}" +
+      "#" + LIKE_WIDGET_ID + ".hm-game-like-overlay{position:fixed!important;right:auto!important;bottom:auto!important;z-index:2147483200!important;margin:0!important}" +
       "#" + LIKE_WIDGET_ID + ".hm-game-like-floating{position:fixed!important;right:14px!important;top:14px!important;bottom:auto!important;z-index:2147483200!important;margin:0!important}" +
-      "body.hm-game-menu-open #" + LIKE_WIDGET_ID + ".hm-game-like-floating{opacity:0;pointer-events:none}" +
+      "body.hm-game-menu-open #" + LIKE_WIDGET_ID + ".hm-game-like-floating,body.hm-game-menu-open #" + LIKE_WIDGET_ID + ".hm-game-like-overlay{opacity:0;pointer-events:none}" +
       "@media(max-width:420px){#" + LIKE_WIDGET_ID + "{width:54px!important;min-width:54px!important;max-width:54px!important;" +
       "height:32px!important;min-height:32px!important;max-height:32px!important;flex-basis:54px!important;padding:0 7px!important;gap:4px!important;margin-left:5px!important;font-size:11px!important}" +
       "#" + LIKE_WIDGET_ID + " .hm-game-like-heart{font-size:16px!important}" +
@@ -646,6 +647,222 @@
   }
 
 
+  function getVisibleGameLikeTrigger() {
+    return (
+      Array.from(
+        document.querySelectorAll(
+          "[data-hm-game-menu-open]"
+        )
+      ).find((node) => {
+        const rect =
+          node.getBoundingClientRect();
+
+        const style =
+          getComputedStyle(node);
+
+        return (
+          rect.width > 0 &&
+          rect.height > 0 &&
+          style.visibility !== "hidden" &&
+          style.display !== "none"
+        );
+      }) || null
+    );
+  }
+
+
+  let likePositionFrame = 0;
+
+
+  function positionGameLike() {
+    const button =
+      document.getElementById(
+        LIKE_WIDGET_ID
+      );
+
+    if (!button) {
+      return;
+    }
+
+    const trigger =
+      getVisibleGameLikeTrigger();
+
+    if (!trigger) {
+      button.classList.remove(
+        "hm-game-like-overlay"
+      );
+
+      button.classList.add(
+        "hm-game-like-floating"
+      );
+
+      button.style.removeProperty(
+        "left"
+      );
+
+      button.style.removeProperty(
+        "top"
+      );
+
+      return;
+    }
+
+    button.classList.remove(
+      "hm-game-like-floating"
+    );
+
+    button.classList.add(
+      "hm-game-like-overlay"
+    );
+
+    const previous =
+      button.__hmLikeTrigger;
+
+    if (
+      previous &&
+      previous !== trigger &&
+      previous.__hmLikePaddingRight !==
+        undefined
+    ) {
+      if (
+        previous.__hmLikePaddingRight
+      ) {
+        previous.style.setProperty(
+          "padding-right",
+          previous.__hmLikePaddingRight,
+          previous.__hmLikePaddingPriority ||
+            ""
+        );
+      } else {
+        previous.style.removeProperty(
+          "padding-right"
+        );
+      }
+
+      delete previous
+        .__hmLikePaddingRight;
+
+      delete previous
+        .__hmLikePaddingPriority;
+    }
+
+    if (
+      trigger.__hmLikePaddingRight ===
+      undefined
+    ) {
+      trigger.__hmLikePaddingRight =
+        trigger.style.getPropertyValue(
+          "padding-right"
+        );
+
+      trigger.__hmLikePaddingPriority =
+        trigger.style.getPropertyPriority(
+          "padding-right"
+        );
+    }
+
+    const buttonRect =
+      button.getBoundingClientRect();
+
+    const triggerRect =
+      trigger.getBoundingClientRect();
+
+    const reserve =
+      Math.ceil(
+        buttonRect.width + 12
+      );
+
+    trigger.style.setProperty(
+      "padding-right",
+      reserve + "px",
+      "important"
+    );
+
+    button.__hmLikeTrigger =
+      trigger;
+
+    const left =
+      Math.max(
+        4,
+        Math.min(
+          window.innerWidth -
+            buttonRect.width -
+            4,
+          triggerRect.right -
+            buttonRect.width -
+            6
+        )
+      );
+
+    const top =
+      Math.max(
+        4,
+        triggerRect.top +
+          (
+            triggerRect.height -
+            buttonRect.height
+          ) / 2
+      );
+
+    button.style.setProperty(
+      "left",
+      Math.round(left) + "px",
+      "important"
+    );
+
+    button.style.setProperty(
+      "top",
+      Math.round(top) + "px",
+      "important"
+    );
+  }
+
+
+  function scheduleGameLikePosition() {
+    if (likePositionFrame) {
+      cancelAnimationFrame(
+        likePositionFrame
+      );
+    }
+
+    likePositionFrame =
+      requestAnimationFrame(
+        () => {
+          likePositionFrame = 0;
+          positionGameLike();
+        }
+      );
+  }
+
+
+  function bindGameLikePosition() {
+    if (
+      window.__hmGameLikePositionBound
+    ) {
+      return;
+    }
+
+    window.__hmGameLikePositionBound =
+      true;
+
+    window.addEventListener(
+      "resize",
+      scheduleGameLikePosition,
+      {
+        passive:true
+      }
+    );
+
+    window.addEventListener(
+      "scroll",
+      scheduleGameLikePosition,
+      {
+        passive:true
+      }
+    );
+  }
+
+
   function mountGameLike() {
     if (
       document.getElementById(
@@ -653,6 +870,7 @@
       )
     ) {
       loadGameLike();
+      scheduleGameLikePosition();
       return;
     }
 
@@ -691,68 +909,31 @@
       }
     );
 
-    const trigger =
-      Array.from(
-        document.querySelectorAll(
-          "[data-hm-game-menu-open]"
-        )
-      ).find((node) => {
-        const rect =
-          node.getBoundingClientRect();
+    button.classList.add(
+      "hm-game-like-overlay"
+    );
 
-        return (
-          rect.width > 0 &&
-          rect.height > 0 &&
-          getComputedStyle(node)
-            .visibility !== "hidden"
-        );
-      });
+    document.body.appendChild(
+      button
+    );
 
-    if (
-      trigger &&
-      trigger.parentElement
-    ) {
-      trigger.insertAdjacentElement(
-        "afterend",
-        button
-      );
-
-      window.setTimeout(
-        () => {
-          const rect =
-            button.getBoundingClientRect();
-
-          if (
-            rect.width <= 0 ||
-            rect.height <= 0 ||
-            getComputedStyle(button)
-              .visibility === "hidden"
-          ) {
-            button.classList.add(
-              "hm-game-like-floating"
-            );
-
-            document.body.appendChild(
-              button
-            );
-          }
-        },
-        180
-      );
-    } else {
-      button.classList.add(
-        "hm-game-like-floating"
-      );
-
-      document.body.appendChild(
-        button
-      );
-    }
+    bindGameLikePosition();
 
     renderGameLike();
     loadGameLike();
-  }
 
+    scheduleGameLikePosition();
+
+    window.setTimeout(
+      scheduleGameLikePosition,
+      180
+    );
+
+    window.setTimeout(
+      scheduleGameLikePosition,
+      700
+    );
+  }
 
   function refreshGameLike() {
     const currentId =
@@ -3466,7 +3647,7 @@
 
     root.setAttribute(
       "data-hm-common-menu",
-      "v1.6.2"
+      "v1.6.3"
     );
 
     document.body.appendChild(
