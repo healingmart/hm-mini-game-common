@@ -323,7 +323,7 @@
       category: "puzzle-strategy",
 
       url:
-        "https://www.healing-mart.com/2026/07/CUBEGAME.HTML",
+        "https://www.healing-mart.com/2026/07/cubegame.html",
 
       description:
         "손가락으로 3 x 3 큐브의 면과 줄을 직접 돌리고 힌트와 회전 도구를 활용해 완성 기록에 도전하는 3D 큐브 퍼즐 게임",
@@ -342,7 +342,7 @@
       category: "puzzle-strategy",
 
       url:
-        "https://www.healing-mart.com/2026/07/Picture-Puzzle.html",
+        "https://www.healing-mart.com/2026/07/picture-puzzle.html",
 
       description:
         "감성적인 작품을 선택해 3 x 3, 4 x 4, 5 x 5 조각을 움직이고 완성 기록에 도전하는 슬라이딩 그림 퍼즐 게임",
