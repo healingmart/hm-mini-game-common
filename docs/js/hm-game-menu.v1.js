@@ -486,17 +486,9 @@
     }
 
     if (count) {
-      count.textContent =
-        String(
-          Math.max(
-            0,
-            Math.round(
-              Number(
-                state.likeCount
-              ) || 0
-            )
-          )
-        );
+      const visibleCount = Math.max(0, Math.round(Number(state.likeCount) || 0));
+      count.hidden = visibleCount <= 0;
+      count.textContent = visibleCount > 0 ? String(visibleCount) : "";
     }
   }
 
@@ -781,16 +773,27 @@
     button.__hmLikeTrigger =
       trigger;
 
+    const visibleChildRects =
+      Array.from(trigger.children)
+        .map((node) => node.getBoundingClientRect())
+        .filter((rect) => rect.width > 0 && rect.height > 0 && rect.width < triggerRect.width * 0.75);
+
+    const contentRight =
+      visibleChildRects.length
+        ? Math.max(...visibleChildRects.map((rect) => rect.right))
+        : triggerRect.left + triggerRect.width / 2;
+
+    const preferredLeft =
+      window.innerWidth >= 768
+        ? contentRight + 10
+        : triggerRect.right - buttonRect.width - 6;
+
     const left =
       Math.max(
-        4,
+        triggerRect.left + 4,
         Math.min(
-          window.innerWidth -
-            buttonRect.width -
-            4,
-          triggerRect.right -
-            buttonRect.width -
-            6
+          triggerRect.right - buttonRect.width - 4,
+          preferredLeft
         )
       );
 
@@ -898,7 +901,7 @@
 
     button.innerHTML =
       '<span class="hm-game-like-heart" aria-hidden="true">♡</span>' +
-      '<span class="hm-game-like-count">0</span>';
+      '<span class="hm-game-like-count" hidden></span>';
 
     button.addEventListener(
       "click",
