@@ -394,31 +394,38 @@
     style.textContent =
       "#" + LIKE_WIDGET_ID + "{" +
       "appearance:none!important;-webkit-appearance:none!important;" +
-      "box-sizing:border-box!important;width:58px!important;min-width:58px!important;max-width:58px!important;" +
-      "height:34px!important;min-height:34px!important;max-height:34px!important;" +
-      "display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:5px!important;" +
-      "flex:0 0 58px!important;padding:0 8px!important;margin:0 0 0 6px!important;" +
-      "color:#5f6876!important;border:1px solid #dde2e8!important;" +
-      "border-radius:999px!important;background:rgba(255,255,255,.96)!important;" +
-      "box-shadow:0 2px 8px rgba(32,45,65,.08)!important;" +
-      "font-family:system-ui,-apple-system,Segoe UI,sans-serif!important;font-size:12px!important;font-weight:800!important;line-height:1!important;" +
+      "box-sizing:border-box!important;width:38px!important;min-width:38px!important;max-width:none!important;" +
+      "height:36px!important;min-height:36px!important;max-height:36px!important;" +
+      "display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:4px!important;" +
+      "flex:0 0 auto!important;padding:0!important;margin:0 0 0 10px!important;" +
+      "color:#ef5a78!important;border:1px solid rgba(255,255,255,.88)!important;" +
+      "border-radius:999px!important;background:rgba(255,255,255,.90)!important;" +
+      "box-shadow:0 5px 16px rgba(15,23,42,.16),inset 0 1px 0 rgba(255,255,255,.75)!important;" +
+      "backdrop-filter:blur(10px) saturate(1.15);-webkit-backdrop-filter:blur(10px) saturate(1.15);" +
+      "font-family:system-ui,-apple-system,Segoe UI,sans-serif!important;font-size:11px!important;font-weight:800!important;line-height:1!important;" +
       "letter-spacing:0!important;text-transform:none!important;white-space:nowrap!important;" +
       "cursor:pointer!important;user-select:none;-webkit-tap-highlight-color:transparent;" +
-      "transition:transform .16s ease,background .16s ease,border-color .16s ease,color .16s ease,opacity .16s ease}" +
-      "#" + LIKE_WIDGET_ID + ":hover{border-color:#e7a6b1!important;background:#fff7f8!important;color:#d84f67!important}" +
-      "#" + LIKE_WIDGET_ID + ":active{transform:scale(.96)}" +
-      "#" + LIKE_WIDGET_ID + ".is-liked{color:#df4862!important;border-color:#edbac3!important;background:#fff4f6!important}" +
+      "transition:width .18s ease,transform .16s ease,background .18s ease,color .18s ease,border-color .18s ease,box-shadow .18s ease,opacity .18s ease}" +
+      "#" + LIKE_WIDGET_ID + ":hover{transform:translateY(-1px) scale(1.03);background:rgba(255,248,250,.97)!important;border-color:rgba(255,181,196,.92)!important;box-shadow:0 7px 18px rgba(239,90,120,.18),inset 0 1px 0 rgba(255,255,255,.88)!important}" +
+      "#" + LIKE_WIDGET_ID + ":active{transform:scale(.94)}" +
+      "#" + LIKE_WIDGET_ID + ".has-count{width:auto!important;min-width:38px!important;padding:0 10px 0 8px!important}" +
+      "#" + LIKE_WIDGET_ID + ".is-liked{color:#fff!important;border-color:rgba(255,255,255,.45)!important;background:linear-gradient(135deg,#ff7f98 0%,#ff5579 52%,#f43f69 100%)!important;box-shadow:0 7px 18px rgba(244,63,105,.28),inset 0 1px 0 rgba(255,255,255,.28)!important}" +
       "#" + LIKE_WIDGET_ID + ".is-loading{opacity:.62;cursor:wait!important}" +
-      "#" + LIKE_WIDGET_ID + " .hm-game-like-heart{font-size:16px!important;font-weight:800!important;line-height:1!important}" +
-      "#" + LIKE_WIDGET_ID + " .hm-game-like-count{min-width:12px!important;text-align:left!important;font-size:11px!important;font-weight:800!important;line-height:1!important;font-variant-numeric:tabular-nums}" +
+      "#" + LIKE_WIDGET_ID + " .hm-game-like-heart{display:block!important;width:19px!important;height:19px!important;flex:0 0 19px!important;line-height:0!important}" +
+      "#" + LIKE_WIDGET_ID + " .hm-game-like-heart svg{display:block!important;width:19px!important;height:19px!important;overflow:visible!important}" +
+      "#" + LIKE_WIDGET_ID + " .hm-game-like-heart path{fill:transparent;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;transform-origin:12px 12px;transition:fill .18s ease,transform .18s ease,stroke-width .18s ease}" +
+      "#" + LIKE_WIDGET_ID + ".is-liked .hm-game-like-heart path{fill:currentColor;stroke-width:1.5;transform:scale(1.04)}" +
+      "#" + LIKE_WIDGET_ID + " .hm-game-like-count{min-width:8px!important;text-align:left!important;font-size:10.5px!important;font-weight:850!important;line-height:1!important;font-variant-numeric:tabular-nums;letter-spacing:-.02em!important}" +
+      "#" + LIKE_WIDGET_ID + " .hm-game-like-count[hidden]{display:none!important}" +
       "#" + LIKE_WIDGET_ID + ".hm-game-like-overlay{position:fixed!important;right:auto!important;bottom:auto!important;z-index:2147483200!important;margin:0!important}" +
       "#" + LIKE_WIDGET_ID + ".hm-game-like-floating{position:fixed!important;right:14px!important;top:14px!important;bottom:auto!important;z-index:2147483200!important;margin:0!important}" +
       "body.hm-game-menu-open #" + LIKE_WIDGET_ID + ".hm-game-like-floating,body.hm-game-menu-open #" + LIKE_WIDGET_ID + ".hm-game-like-overlay{opacity:0;pointer-events:none}" +
-      "@media(max-width:420px){#" + LIKE_WIDGET_ID + "{width:54px!important;min-width:54px!important;max-width:54px!important;" +
-      "height:32px!important;min-height:32px!important;max-height:32px!important;flex-basis:54px!important;padding:0 7px!important;gap:4px!important;margin-left:5px!important;font-size:11px!important}" +
-      "#" + LIKE_WIDGET_ID + " .hm-game-like-heart{font-size:16px!important}" +
-      "#" + LIKE_WIDGET_ID + ".hm-game-like-floating{right:14px!important;top:14px!important}}" +
-      "@media(prefers-reduced-motion:reduce){#" + LIKE_WIDGET_ID + "{transition:none}}";
+      "@media(max-width:420px){#" + LIKE_WIDGET_ID + "{width:34px!important;min-width:34px!important;height:34px!important;min-height:34px!important;max-height:34px!important;margin-left:7px!important}" +
+      "#" + LIKE_WIDGET_ID + ".has-count{width:auto!important;min-width:34px!important;padding:0 8px 0 7px!important}" +
+      "#" + LIKE_WIDGET_ID + " .hm-game-like-heart,#" + LIKE_WIDGET_ID + " .hm-game-like-heart svg{width:17px!important;height:17px!important;flex-basis:17px!important}" +
+      "#" + LIKE_WIDGET_ID + " .hm-game-like-count{font-size:9.5px!important}" +
+      "#" + LIKE_WIDGET_ID + ".hm-game-like-floating{right:12px!important;top:12px!important}}" +
+      "@media(prefers-reduced-motion:reduce){#" + LIKE_WIDGET_ID + "{transition:none}#" + LIKE_WIDGET_ID + " .hm-game-like-heart path{transition:none}}";
 
     document.head.appendChild(
       style
@@ -436,14 +443,19 @@
       return;
     }
 
-    const heart =
-      button.querySelector(
-        ".hm-game-like-heart"
-      );
-
     const count =
       button.querySelector(
         ".hm-game-like-count"
+      );
+
+    const visibleCount =
+      Math.max(
+        0,
+        Math.round(
+          Number(
+            state.likeCount
+          ) || 0
+        )
       );
 
     button.classList.toggle(
@@ -454,6 +466,11 @@
     button.classList.toggle(
       "is-loading",
       state.likeLoading
+    );
+
+    button.classList.toggle(
+      "has-count",
+      visibleCount > 0
     );
 
     button.setAttribute(
@@ -470,25 +487,25 @@
           ? "좋아요 취소"
           : "좋아요"
       ) +
-      ", 현재 " +
-      Math.max(
-        0,
-        Number(state.likeCount) || 0
-      ) +
-      "개"
+      (
+        visibleCount > 0
+          ? ", 현재 " +
+            visibleCount +
+            "개"
+          : ""
+      )
     );
 
-    if (heart) {
-      heart.textContent =
-        state.likeLiked
-          ? "♥"
-          : "♡";
-    }
-
     if (count) {
-      const visibleCount = Math.max(0, Math.round(Number(state.likeCount) || 0));
-      count.hidden = visibleCount <= 0;
-      count.textContent = visibleCount > 0 ? String(visibleCount) : "";
+      count.hidden =
+        visibleCount <= 0;
+
+      count.textContent =
+        visibleCount > 0
+          ? String(
+              visibleCount
+            )
+          : "";
     }
   }
 
@@ -900,7 +917,7 @@
     );
 
     button.innerHTML =
-      '<span class="hm-game-like-heart" aria-hidden="true">♡</span>' +
+      '<span class="hm-game-like-heart" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"></path></svg></span>' +
       '<span class="hm-game-like-count" hidden></span>';
 
     button.addEventListener(
